@@ -1,27 +1,22 @@
-import requests
-import re
+import pickle
+from subprocess import run
 
-def getHostname(text):
-    l=text.split('\n')
-    l=l[4:]
-    hosts=[]
-    i=0
-    while '</pre>' not in l[i]:
-        curr=re.search("H=.*\">",l[i])
-        if curr:
-            name=curr.group(0)[2:-2]
-            hosts.append(name)
-        i+=1
-    return hosts    
+filen="hosts"
+cmd=["ppec","search","--tags","INTERN,T3","-r","nb6"]
+hosts=[]
 
+cmdo=run(cmd,capture_output=True)
+data,err=cmdo.stdout,cmdo.stderr
 
-filename="hosts"
-aturl="http://at.phonepe.nb6:8080/phonepeat/atbrowser.pl"
+data=data.decode("utf-8")
+data=data.split('\n')
+for host in data:
+    if '- ' in host:
+        hosts.append(host.split('- ')[1])
 
 
-r=requests.get(aturl)
-if r.status_code!=200:
-    print(r.status_code)
-    exit(0)
 
-hosts=getHostname(r.text)
+f=open(filen,'wb')
+pickle.dump(hosts,f)
+f.close()
+
