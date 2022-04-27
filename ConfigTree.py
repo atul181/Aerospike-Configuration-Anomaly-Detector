@@ -86,11 +86,17 @@ class ConfigTree:
     def checkForbidden(path1,path2):
         f1,f2=0,0
         for line in path1:
-            if ConfigTree.forbidden in ' '.join(line[-1]):
-                f1+=1
+            for forb in ConfigTree.forbidden:
+                if forb in ' '.join(line[-1]):
+                    f1+=1
+                    break
+
         for line in path2:
-            if ConfigTree.forbidden in ' '.join(line[-1]):
-                f2+=1
+            for forb in ConfigTree.forbidden:
+                if forb in ' '.join(line[-1]):
+                    f2+=1
+                    break
+        #print(f1,f2)
         if f2==f1:
             return True
         return False
@@ -104,7 +110,7 @@ class ConfigTree:
         ConfigTree.paths=[]
         path2=ConfigTree.genPaths(root2)
         flag=ConfigTree.checkForbidden(path1,path2)
-        p1count,p2count=0
+        p1count,p2count=0,0
         for line1 in path1:
             for line2 in path2:
                 if line1==line2:
@@ -112,7 +118,7 @@ class ConfigTree:
         for line2 in path1:
             for line1 in path2:
                 if line2==line1:
-                    p2count+=2
+                    p2count+=1
         if p1count==p2count and flag:
             return True
         return False
