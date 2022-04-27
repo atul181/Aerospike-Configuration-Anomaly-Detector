@@ -1,4 +1,6 @@
-
+'''
+Create an object of this class with a none parent( which is by default) and call process method of this class and provide it with the created project as argument and also the text and its starting location(mostly 0).  
+'''
 
 
 class ConfigTree:
@@ -31,12 +33,11 @@ class ConfigTree:
                 count+=1
             elif text[i]=='}':
                 count-=1
-            if text[i]=='}' and count==0:
-                break
+            if text[i]=='}' and count==-1:
+                return i+1,data
             data+=text[i]
             i+=1
-        if i<len(text):
-            data+=text[i]
+            
         return i+1,data
 
 
