@@ -1,9 +1,14 @@
 '''
-Create an object of this class with a none parent( which is by default) and call process method of this class and provide it with the created project as argument and also the text and its starting location(mostly 0).  
+Create an object of this class with a none parent( which is by default) and call process method of this class and provide it with the created object as argument and also the text and its starting location(mostly 0).  
 '''
+
+import copy
 
 
 class ConfigTree:
+
+    paths=[]
+
     def __init__(self,parent=None):
         self.data=None
         self.parent=None
@@ -37,7 +42,7 @@ class ConfigTree:
                 return i+1,data
             data+=text[i]
             i+=1
-            
+
         return i+1,data
 
 
@@ -61,4 +66,19 @@ class ConfigTree:
         nnptr,cdata=ConfigTree.getChildData(text,Cptr)
         ConfigTree.process(cdata,0,node)
         ConfigTree.process(text,nnptr,father)
+
+    def genPaths(root):
+        def getPaths(root,path):
+            if not root:
+                return 
+            temp=copy.deepcopy(path)
+            temp.append(root.data)
+            if len(root.children)==0:
+                ConfigTree.paths.append(temp)
+                return 
+            for child in root.children:
+                getPaths(child,temp)
+            del temp
+        getPaths(root,[])
+        return ConfigTree.paths
         

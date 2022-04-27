@@ -1,11 +1,12 @@
-from argparse import Namespace
-from xml.sax.handler import property_declaration_handler
-from django.db import DatabaseError
 from ConfigTree import ConfigTree
 
-text='''
+text1='''
 server {
       namespace Atul {
+
+
+
+
         thik mem
         bellar { name atul }
         }
@@ -13,6 +14,20 @@ server {
       namespace pinki {}
 }
 '''
+text2='''
+server {
+      namespace Tikku {}
+      namespace Atul {
+        thik mem
+        bellar { name tikku }
+        }
+      namespace pinki {}
+}
+'''
 obj=ConfigTree()
-ConfigTree.process(text,0,obj)
-print(obj.children[0].children[2].data)
+ConfigTree.process(text1,0,obj)
+#print(obj.children[0].children[0].children[1].data)
+data=ConfigTree.genPaths(obj.children[0])
+for i in data:
+  print(i,end='\n\n')
+
