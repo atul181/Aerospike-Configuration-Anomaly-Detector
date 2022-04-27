@@ -25,7 +25,7 @@ server {
 }
 '''
 obj=ConfigTree()
-ConfigTree.process(text1,0,obj)
+ConfigTree.process(text2,0,obj)
 #print(obj.children[0].children[0].children[1].data)
 data=ConfigTree.genPaths(obj.children[0])
 for i in data:
