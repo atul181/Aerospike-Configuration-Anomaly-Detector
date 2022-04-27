@@ -83,23 +83,6 @@ class ConfigTree:
         getPaths(root,[])
         return ConfigTree.paths
     
-    def checkForbidden(path1,path2):
-        f1,f2=0,0
-        for line in path1:
-            for forb in ConfigTree.forbidden:
-                if forb in ' '.join(line[-1]):
-                    f1+=1
-                    break
-
-        for line in path2:
-            for forb in ConfigTree.forbidden:
-                if forb in ' '.join(line[-1]):
-                    f2+=1
-                    break
-        #print(f1,f2)
-        if f2==f1:
-            return True
-        return False
 
     def isSame(text1,text2):
         root1=ConfigTree()
@@ -109,17 +92,38 @@ class ConfigTree:
         path1=ConfigTree.genPaths(root1)
         ConfigTree.paths=[]
         path2=ConfigTree.genPaths(root2)
-        flag=ConfigTree.checkForbidden(path1,path2)
         p1count,p2count=0,0
+        f1,f2=0,0
         for line1 in path1:
+            flag=0
+            for forb in ConfigTree.forbidden:
+                if forb in ' '.join(line1[-1]):
+                    f1+=1
+                    flag=1
+                    break
+            if flag:
+                continue
             for line2 in path2:
                 if line1==line2:
+                    #print(line1,line2)
                     p1count+=1
         for line2 in path1:
+            flag=0
+            for forb in ConfigTree.forbidden:
+                if forb in ' '.join(line2[-1]):
+                    f2+=1
+                    flag=1
+                    break
+            if flag:
+                continue
             for line1 in path2:
                 if line2==line1:
                     p2count+=1
-        if p1count==p2count and flag:
+        #print(p1count,p2count)
+        #print(path1)
+        #print(len(path1))
+        #print(f1,f2)
+        if p1count==p2count and f1==f2 and (p1count+f1==len(path1)):
             return True
         return False
 
