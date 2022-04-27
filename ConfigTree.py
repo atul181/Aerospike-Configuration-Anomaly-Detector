@@ -8,6 +8,7 @@ import copy
 class ConfigTree:
 
     paths=[]
+    forbidden=['address','host']
 
     def __init__(self,parent=None):
         self.data=None
@@ -81,4 +82,43 @@ class ConfigTree:
             del temp
         getPaths(root,[])
         return ConfigTree.paths
+    
+    def checkForbidden(path1,path2):
+        f1,f2=0,0
+        for line in path1:
+            if ConfigTree.forbidden in ' '.join(line[-1]):
+                f1+=1
+        for line in path2:
+            if ConfigTree.forbidden in ' '.join(line[-1]):
+                f2+=1
+        if f2==f1:
+            return True
+        return False
+
+    def isSame(text1,text2):
+        root1=ConfigTree()
+        root2=ConfigTree()
+        conf1=ConfigTree.process(text1,0,root1)
+        conf2=ConfigTree.process(text2,0,root2)
+        path1=ConfigTree.genPaths(root1)
+        ConfigTree.paths=[]
+        path2=ConfigTree.genPaths(root2)
+        flag=ConfigTree.checkForbidden(path1,path2)
+        p1count,p2count=0
+        for line1 in path1:
+            for line2 in path2:
+                if line1==line2:
+                    p1count+=1
+        for line2 in path1:
+            for line1 in path2:
+                if line2==line1:
+                    p2count+=2
+        if p1count==p2count and flag:
+            return True
+        return False
+
+
+        
+
+
         

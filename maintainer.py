@@ -21,6 +21,11 @@ if master==os.uname().nodename and r.get(API).status_code!=200:
 elif r.get(API).status_code==200:
    exit()
 
+rq=r.get(API)
+if rq.status_code!=200:
+  print("Error in connecting")
+  exit(0)
+
 
 
 
