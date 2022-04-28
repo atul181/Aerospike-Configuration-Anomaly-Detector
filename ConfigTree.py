@@ -149,6 +149,8 @@ class ConfigTree:
         #print(fb)
         while i<len(path):
             j=0
+            if len(q)==0:
+                return default
             while j<len(q):
                 if q[j].data==path[i]:
                     i+=1

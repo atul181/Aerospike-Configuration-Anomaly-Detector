@@ -1,25 +1,11 @@
 from ConfigTree import ConfigTree
 
 text1='''
-A {
-   B {
-      address 5;
-   }
-   c address 14;
-   k host 9;
+a {
+    b address
 }
 '''
 text2='''
-A {
-    B {
-      address 6;
-    }
-    
-    k host 10;
-}
-C {
-   address 9;
-}
 
 '''
 
