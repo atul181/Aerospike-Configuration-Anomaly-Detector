@@ -60,6 +60,7 @@ class ConfigTree:
             return
         node=ConfigTree(parent=father)
         node.data=data.split()
+        node.data=' '.join(node.data)
         father.children.append(node)
         if hasNoChild:
           ConfigTree.process(text,Cptr,father)
@@ -120,7 +121,6 @@ class ConfigTree:
                 if line2==line1:
                     p2count+=1
         #print(p1count,p2count)
-        #print(path1)
         #print(len(path1))
         #print(f1,f2)
         if p1count==p2count and f1==f2 and (p1count+f1==len(path1)):
