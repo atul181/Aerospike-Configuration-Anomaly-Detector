@@ -65,14 +65,16 @@ class ConfigTree:
                 if first[i].isalnum():
                     flag=1
                     break
-            print(flag,data)
+            #print(flag,data)
             if flag==0:
                 ConfigTree.process(text,Cptr,father)
                 return
             data=first
         node=ConfigTree(parent=father)
         node.data=data.split()
+        node.data=' '.join(node.data)
         father.children.append(node)
+        node.parent=father
         if hasNoChild:
           ConfigTree.process(text,Cptr,father)
           return
@@ -81,6 +83,7 @@ class ConfigTree:
         ConfigTree.process(text,nnptr,father)
 
     def genPaths(root):
+        ConfigTree.paths=[]
         def getPaths(root,path):
             if not root:
                 return 
@@ -137,6 +140,50 @@ class ConfigTree:
         if p1count==p2count and f1==f2 and (p1count+f1==len(path1)):
             return True,root1,root2
         return False,root1,root2
+
+
+    def getLeafValue(root,path,fb,default):
+        q=[root]
+        i=0
+        #print(path)
+        #print(fb)
+        while i<len(path):
+            j=0
+            while j<len(q):
+                if q[j].data==path[i]:
+                    i+=1
+                    q=q[j].children
+                    j=-1
+                elif fb in q[j].data and len(q[j].children)==0:
+                    return q[j].data
+                elif j==len(q)-1:
+                    return default
+                j+=1
+
+
+    def makeCorrectConfig(root1,root2):
+            '''
+            first root is the head of tree of master config.
+            '''
+            q=[root1]
+            while q:
+                temp=q.pop(0)
+                if len(temp.children)==0:
+                    for fb in ConfigTree.forbidden:
+                        if fb in temp.data:
+                            path=[]
+                            node=temp
+                            while node:
+                                path.append(node.data)
+                                node=node.parent
+                            #print(path)
+                            temp.data=ConfigTree.getLeafValue(root2,path[::-1],fb,temp.data)
+                            break
+                else:
+                    q+=temp.children
+            return root1
+            
+            
 
 
         
