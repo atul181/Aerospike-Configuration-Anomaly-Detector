@@ -108,7 +108,7 @@ Configuration:
                                    # Data in memory without persistance namespace
         replication-factor 2
         memory-size 32G
-        default-ttl 30d               # 30 days, use 0 to never expire/evict.
+        default-ttl 30d               # 3333333 days, use 0 to never expire/evict.
         storage-engine memory
     }
 '''

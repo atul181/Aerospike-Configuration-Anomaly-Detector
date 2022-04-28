@@ -58,9 +58,20 @@ class ConfigTree:
         if not isNotEmpty:
             ConfigTree.process(text,Cptr,father)
             return
+        if '#' in data:
+            flag=0
+            first=data.split('#')[0]
+            for i in range(len(first)):
+                if first[i].isalnum():
+                    flag=1
+                    break
+            print(flag,data)
+            if flag==0:
+                ConfigTree.process(text,Cptr,father)
+                return
+            data=first
         node=ConfigTree(parent=father)
         node.data=data.split()
-        node.data=' '.join(node.data)
         father.children.append(node)
         if hasNoChild:
           ConfigTree.process(text,Cptr,father)
