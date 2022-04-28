@@ -113,4 +113,4 @@ Configuration:
     }
 '''
 
-print(ConfigTree.isSame(text1,text2))
+print(ConfigTree.isSame(text1,text2)[0])

@@ -124,8 +124,8 @@ class ConfigTree:
         #print(len(path1))
         #print(f1,f2)
         if p1count==p2count and f1==f2 and (p1count+f1==len(path1)):
-            return True
-        return False
+            return True,root1,root2
+        return False,root1,root2
 
 
         
