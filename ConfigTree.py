@@ -142,11 +142,13 @@ class ConfigTree:
         return False,root1,root2
 
 
-    def getLeafValue(root,path,fb,default):
+    def getLeafValue(root,path,fb,count,default):
         q=[root]
         i=0
+        fbcount=1
         #print(path)
         #print(fb)
+        #print(count)
         while i<len(path):
             j=0
             if len(q)==0:
@@ -156,8 +158,10 @@ class ConfigTree:
                     i+=1
                     q=q[j].children
                     j=-1
-                elif fb in q[j].data and len(q[j].children)==0:
+                elif fb in q[j].data and len(q[j].children)==0 and fbcount==count:
                     return q[j].data
+                elif fb in q[j].data and len(q[j].children)==0:
+                    fbcount+=1
                 elif j==len(q)-1:
                     return default
                 j+=1
@@ -168,6 +172,7 @@ class ConfigTree:
             first root is the head of tree of master config.
             '''
             q=[root1]
+            fbparamscount=dict()
             while q:
                 temp=q.pop(0)
                 if len(temp.children)==0:
@@ -179,7 +184,16 @@ class ConfigTree:
                                 path.append(node.data)
                                 node=node.parent
                             #print(path)
-                            temp.data=ConfigTree.getLeafValue(root2,path[::-1],fb,temp.data)
+                            pathfb=copy.deepcopy(path)[1:]
+                            pathfb.insert(0,fb)
+                            pathfb[-1]=str(pathfb[-1])
+                            pathfb=' '.join(pathfb)
+                            #print('path',path)
+                            #print(pathfb)
+                            pathfbc=fbparamscount.get(pathfb,0)+1
+                            #print(fbparamscount)
+                            temp.data=ConfigTree.getLeafValue(root2,path[::-1],fb,pathfbc,temp.data)
+                            fbparamscount[pathfb]=pathfbc
                             break
                 else:
                     q+=temp.children
