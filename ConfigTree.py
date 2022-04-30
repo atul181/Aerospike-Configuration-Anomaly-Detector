@@ -156,23 +156,30 @@ class ConfigTree:
         #print(path)
         #print(fb)
         #print(count)
+        #print(fb,count)
         while i<len(path):
             j=0
             if len(q)==0:
                 return default
             while j<len(q):
                 if q[j].data==path[i]:
+                    #print(fb,q[j].data)
+                    if i==len(path)-1 and len(q[j].children)==0:
+                        return q[j].data
                     i+=1
                     q=q[j].children
                     j=-1
                 elif fb==q[j].data.split()[0] and len(q[j].children)==0 and fbcount==count:
+                    #print(fb,fbcount,count)
                     return q[j].data
                 elif fb==q[j].data.split()[0] and len(q[j].children)==0:
+                    #print(q[j].data,fb,fbcount,count)
                     fbcount+=1
                 elif j==len(q)-1:
                     return default
                 else:
-                    return default
+                  #print(q[j].data,fb,fbcount,count)
+                  pass
                 j+=1
 
 
