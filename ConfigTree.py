@@ -210,24 +210,28 @@ class ConfigTree:
                     q+=temp.children
             return root1
             
-    def stringify(root,intent):
-        if not root:
+    def stringify(root):
+        def _stringify(root,intent):
+          if not root:
             return
-        if root.data:
+          if root.data:
            #print('config',config)
            ConfigTree.config=ConfigTree.config+[' '*intent]+[root.data]
            #print(ConfigTree.config,id(ConfigTree.config))
-        if len(root.children)==0:
+          if len(root.children)==0:
             ConfigTree.config+=[' \n']
             return
-        if root.data:
+          if root.data:
            ConfigTree.config+=[' {\n']
-        for child in root.children:
+          for child in root.children:
             #print(child,ConfigTree.config)
-            ConfigTree.stringify(child,intent+2)
-        if root.data:
-          ConfigTree.config=ConfigTree.config+[' '*intent]+['}\n']
-          
+            _stringify(child,intent+2)
+          if root.data:
+           ConfigTree.config=ConfigTree.config+[' '*intent]+['}\n']
+
+        _stringify(root,-2)
+        return ''.join(ConfigTree.config)
+
              
             
 
