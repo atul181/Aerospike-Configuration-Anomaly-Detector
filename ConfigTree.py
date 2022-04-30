@@ -171,6 +171,8 @@ class ConfigTree:
                     fbcount+=1
                 elif j==len(q)-1:
                     return default
+                else:
+                    return default
                 j+=1
 
 
@@ -201,6 +203,7 @@ class ConfigTree:
                             pathfbc=fbparamscount.get(pathfb,0)+1
                             #print(fbparamscount)
                             temp.data=ConfigTree.getLeafValue(root2,path[::-1],fb,pathfbc,temp.data)
+                            #print(temp.data)
                             fbparamscount[pathfb]=pathfbc
                             break
                 else:
