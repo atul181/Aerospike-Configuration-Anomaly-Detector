@@ -11,6 +11,7 @@ class ConfigTree:
     forbidden=[
         'node-id',
         'tls-address',
+        'mesh-seed-address-port',
         'address',
 
     ]
@@ -164,9 +165,9 @@ class ConfigTree:
                     i+=1
                     q=q[j].children
                     j=-1
-                elif fb in q[j].data and len(q[j].children)==0 and fbcount==count:
+                elif fb==q[j].data.split()[0] and len(q[j].children)==0 and fbcount==count:
                     return q[j].data
-                elif fb in q[j].data and len(q[j].children)==0:
+                elif fb==q[j].data.split()[0] and len(q[j].children)==0:
                     fbcount+=1
                 elif j==len(q)-1:
                     return default
@@ -183,7 +184,8 @@ class ConfigTree:
                 temp=q.pop(0)
                 if len(temp.children)==0:
                     for fb in ConfigTree.forbidden:
-                        if fb in temp.data:
+                        if fb==temp.data.split()[0]:
+                            #print(temp.data)
                             path=[]
                             node=temp
                             while node:
