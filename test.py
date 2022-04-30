@@ -7,9 +7,8 @@ A {
     address 11
     B d
 }
-A  k {
+A {
     f 5;
-    n 6;
 }
 '''
 text2='''
@@ -25,6 +24,10 @@ B {
 '''
 
 a,b,d=ConfigTree.isSame(text1,text2)
-print(a)
+#print(a)
 c=ConfigTree.makeCorrectConfig(b,d)
-print(ConfigTree.genPaths(c))
+#print(ConfigTree.genPaths(c))
+config=[]
+ConfigTree.stringify(c,-2)
+config=ConfigTree.config
+print(''.join(config))
