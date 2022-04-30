@@ -1327,7 +1327,5 @@ xdr {
 '''
 
 a,b,d=ConfigTree.isSame(text1,text2)
-#print(a)
 c=ConfigTree.makeCorrectConfig(b,d)
-#print(ConfigTree.genPaths(c))
 print(ConfigTree.stringify(c))
