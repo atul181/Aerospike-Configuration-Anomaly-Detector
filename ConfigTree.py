@@ -11,7 +11,6 @@ class ConfigTree:
     forbidden=[
         'node-id',
         'tls-address',
-        'mesh-seed-address-port',
         'address',
 
     ]
