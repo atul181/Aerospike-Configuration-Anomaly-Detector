@@ -1,22 +1,15 @@
 import pickle
-from subprocess import run
 
-filen="hosts"
-cmd=["ppec","search","--tags","INTERN,T3","-r","nb6"]
-hosts=[]
+class HostsFinder:
+  hosts=[]
+  FILE='aero_config.yml'
+  def getAddresses():
+     f=open(HostsFinder.FILE,'r')
+     text=f.read().split('\n')[1:]
+     f.close()
+     for i in range(len(text)):
+         HostsFinder.hosts.append(text[i].split()[1])
+     return HostsFinder.hosts
 
-cmdo=run(cmd,capture_output=True)
-data,err=cmdo.stdout,cmdo.stderr
-
-data=data.decode("utf-8")
-data=data.split('\n')
-for host in data:
-    if '- ' in host:
-        hosts.append(host.split('- ')[1])
-
-
-
-f=open(filen,'wb')
-pickle.dump(hosts,f)
-f.close()
-
+#print(HostsFinder.getAddresses())
+    
