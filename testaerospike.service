@@ -1,0 +1,11 @@
+[Unit]
+Description=Aerospike conf maintainer
+
+[Service]
+WorkingDirectory=/home/atul/aspy
+ExecStart=python3 init.py
+Restart=always
+RestartSec=7
+
+[Install]
+WantedBy=multi-user.target

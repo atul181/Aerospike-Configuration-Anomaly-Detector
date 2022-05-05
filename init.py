@@ -23,7 +23,7 @@ def startMaster():
 
 def doClientWork(maddr):
     r=requests.get("http://"+maddr+":81/conf")
-    mconf=r.text()
+    mconf=r.text
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
@@ -42,7 +42,7 @@ addrs.sort()
 for ad in addrs:
     if os.system("ping -c 1 "+ad)==0:
         #ad is master
-        if (os.uname().hostname in ad) or (getipaddr()==ad):
+        if (os.uname().nodename in ad) or (getipaddr()==ad):
             #this is ad and master
             try:
                if requests.get("http://"+ad+":81/conf").status_code==200:
