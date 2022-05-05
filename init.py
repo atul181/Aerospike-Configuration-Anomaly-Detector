@@ -7,12 +7,9 @@ import requests
 from hostfinder import HostsFinder
 from ConfigTree import ConfigTree
 import socket
-import sys
 
-pf=open("logs","w")
-sys.stdout=pf
 
-app_start_command="nohup python3 flaskserver.py"
+app_start_command="python3 flaskserver.py"
 conf_location="aerospike.conf"
 
 def getipaddr():
@@ -20,7 +17,13 @@ def getipaddr():
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
 
-def startMaster():
+def startMaster(addrs,i):
+    while i<len(addrs):
+        try:
+           requests.get("http://"+addrs[i]+":81/shutdown")
+        except:
+            pass
+        i+=1
     os.system(app_start_command)
 
 def doClientWork(maddr):
@@ -44,29 +47,16 @@ def doInterNodeTask():
 
 addrs=HostsFinder.getAddresses()
 addrs.sort()
-for ad in addrs:
-    if os.system("ping -c 1 "+ad)==0:
+for i in range(len(addrs)):
+    if os.system("ping -c 1 "+addrs[i])==0:
         #ad is master
-        if (os.uname().nodename in ad) or (getipaddr()==ad):
-            #this is ad and master
-            print("I am ",ad," and I am a Master.")
-            try:
-               if requests.get("http://"+ad+":81/conf").status_code==200:
-                  pass
-                  break
-               else:
-                startMaster()
-                break
-            except requests.exceptions.ConnectionError:
-                startMaster()
-                break
+        if (os.uname().nodename in addrs[i]) or (getipaddr()==addrs[i]):
+            startMaster(addrs,i+1)
         else:
-            print("I am ",ad," and I am a Slave.")
-            doClientWork(ad)
+            doClientWork(addrs[i])
             break
 
 doInterNodeTask()             
 
-pf.close()
 
 
