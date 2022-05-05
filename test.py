@@ -3,6 +3,7 @@ A {
         B d
         C d
 }
+This is ubuntu 4
 '''
 text2='''
 A {
@@ -10,10 +11,8 @@ A {
         C d
         K d
 }
-B {
-        C k;
-}
-
+This is ubuntu 3
+This is ubuntu 2
 '''
 
 from ConfigTree import ConfigTree

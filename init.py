@@ -7,8 +7,10 @@ import requests
 from hostfinder import HostsFinder
 from ConfigTree import ConfigTree
 import socket
+import sys
 
-
+pf=open("logs","w")
+sys.stdout=pf
 
 app_start_command="nohup python3 flaskserver.py"
 conf_location="/etc/aerospike/aerospike.conf"
@@ -22,7 +24,10 @@ def startMaster():
     os.system(app_start_command)
 
 def doClientWork(maddr):
-    r=requests.get("http://"+maddr+":81/conf")
+    try:
+      r=requests.get("http://"+maddr+":81/conf")
+    except requests.exceptions.ConnectionError:
+        return
     mconf=r.text
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
@@ -49,13 +54,16 @@ for ad in addrs:
                  pass
                else:
                 startMaster()
+                break
             except requests.exceptions.ConnectionError:
                 startMaster()
+                break
         else:
             doClientWork(ad)
             break
 
 doInterNodeTask()             
 
+pf.close()
 
 
