@@ -52,7 +52,8 @@ for ad in addrs:
             print("I am ",ad," and I am a Master.")
             try:
                if requests.get("http://"+ad+":81/conf").status_code==200:
-                 pass
+                  pass
+                  break
                else:
                 startMaster()
                 break
