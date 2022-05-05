@@ -49,6 +49,7 @@ for ad in addrs:
         #ad is master
         if (os.uname().nodename in ad) or (getipaddr()==ad):
             #this is ad and master
+            print("I am ",ad," and I am a Master.")
             try:
                if requests.get("http://"+ad+":81/conf").status_code==200:
                  pass
@@ -59,6 +60,7 @@ for ad in addrs:
                 startMaster()
                 break
         else:
+            print("I am ",ad," and I am a Slave.")
             doClientWork(ad)
             break
 
