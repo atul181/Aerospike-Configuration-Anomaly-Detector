@@ -13,7 +13,7 @@ pf=open("logs","w")
 sys.stdout=pf
 
 app_start_command="nohup python3 flaskserver.py"
-conf_location="/etc/aerospike/aerospike.conf"
+conf_location="aerospike/aerospike.conf"
 
 def getipaddr():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

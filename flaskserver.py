@@ -2,7 +2,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-conf_location='/etc/aerospike/aerospike.conf'
+conf_location='aerospike.conf'
 
 @app.route('/conf')
 def index():
