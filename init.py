@@ -30,7 +30,9 @@ def doClientWork(maddr):
         
         return
     msconfig=ConfigTree.makeCorrectConfig(mtree,stree)
-    open(conf_location,"w").write(msconfig)
+    f=open(conf_location,"w")
+    f.write(ConfigTree.stringify(msconfig))
+    f.close()
 
 def doInterNodeTask():
     pass
@@ -51,6 +53,7 @@ for ad in addrs:
                 startMaster()
         else:
             doClientWork(ad)
+            break
 
 doInterNodeTask()             
 
