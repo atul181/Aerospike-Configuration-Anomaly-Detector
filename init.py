@@ -40,6 +40,14 @@ def tasks():
     while 1:
         os.system("echo test >> log2")
         time.sleep(duration)
+        for i in range(len(addrs)):
+            if os.system("ping -c 1 "+addrs[i])==0:
+                if (os.uname().nodename in addrs[i]) or (getipaddr()==addrs[i]):
+                    pass
+                else:
+                    return
+        
+                
 
 
 def doClientWork(maddr):
