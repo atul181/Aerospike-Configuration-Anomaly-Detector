@@ -22,6 +22,7 @@ def getipaddr():
     return s.getsockname()[0]
 
 def startMaster(addrs,i):
+    orig=i-1
     while i<len(addrs):
         try:
            requests.get("http://"+addrs[i]+":81/shutdown")
@@ -31,7 +32,7 @@ def startMaster(addrs,i):
     #start the thread
     t=threading.Thread(target=tasks)
     t.start()
-    os.system("echo Hi I am "+addrs[i]+" and I am the Master > logs")
+    os.system("echo Hi I am "+addrs[orig]+" and I am the Master > logs")
     os.system(app_start_command)
     t.join()
 
