@@ -51,7 +51,6 @@ def doClientWork(maddr):
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
-        
         return
     msconfig=ConfigTree.makeCorrectConfig(mtree,stree)
     f=open(conf_location,"w")
