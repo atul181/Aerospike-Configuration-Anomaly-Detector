@@ -1,25 +1,10 @@
-text1='''
-A {
-        B d
-        C d
-}
-This is ubuntu 4
-'''
-text2='''
-A {
-        B d
-        C d
-        K d
-}
-This is ubuntu 3
-This is ubuntu 2
-'''
+import threading
+class Foo (threading.Thread):
+    def __init__(self,x):
+        self.__x = x
+        threading.Thread.__init__(self)
+    def run (self):
+          print(str(self.__x))
 
-from ConfigTree import ConfigTree
-
-a,b,c=ConfigTree.isSame(text1,text2)
-print(a)
-if a:
-        exit()
-d=ConfigTree.makeCorrectConfig(b,c)
-print(ConfigTree.stringify(d))
+for x in range(20):
+    Foo(x).start()
