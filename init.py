@@ -37,7 +37,7 @@ def startMaster(addrs,i):
 
 def tasks():
     while 1:
-        os.system("echo test > log2")
+        os.system("echo test >> log2")
         time.sleep(duration)
 
 
