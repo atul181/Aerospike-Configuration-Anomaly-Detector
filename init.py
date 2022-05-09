@@ -2,6 +2,7 @@
 This script will start API server if the current node is alphabetic master.
 It can also run as client to create parse trees for validation and synchronization of configs.
 """
+import subprocess
 import os
 import requests
 from hostfinder import HostsFinder
@@ -38,15 +39,54 @@ def startMaster(addrs,i):
 
 def tasks():
     while 1:
-        os.system("echo test >> log2")
+        #os.system("echo test >> log2")
         time.sleep(duration)
         for i in range(len(addrs)):
             if os.system("ping -c 1 "+addrs[i])==0:
                 if (os.uname().nodename in addrs[i]) or (getipaddr()==addrs[i]):
-                    pass
+                    break
                 else:
                     return
+        secondSubTask()
+        thirdSubTask()
+
+def secondSubTask():
+    pass
+
+def thirdSubTask():
+    root=ConfigTree()
+    root.data=None
+    netc=ConfigTree.mtfc('network')
+    netc.parent=root
+    secc=ConfigTree.mtfc('security')
+    secc.parent=root
+    serc=ConfigTree.mtfc('service')
+    serc.parent=root
+    xdrc=ConfigTree.mtfc('xdr')
+    xdrc.parent=root
+    nsa=getAllNamespaces()  #name space array
+    nsta=[]
+    for i in nsa:
+        t=ConfigTree.mtfc("namespace "+i)
+        nsta.append(t)
+        t.parent=root
+    root.children=[netc,secc,xdrc,serc]+nsta
+    nconf=ConfigTree.stringify(root)
+    open(conf_location,'w').write(nconf)
         
+
+def getAllNamespaces():
+    q=subprocess.Popen(['aql','-c',"SHOW NAMESPACES"],stdout=subprocess.PIPE)
+    stdout,stderr=q.communicate()
+    stdout=stdout.split('\n')
+    stdout=stdout[4:]
+    arr=[]
+    for l in stdout:
+        try:
+           arr.append(l.split("\"")[1])
+        except:
+            pass
+    return arr
                 
 
 
