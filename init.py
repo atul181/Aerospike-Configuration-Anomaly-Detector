@@ -67,7 +67,7 @@ def thirdSubTask():
     nsa=getAllNamespaces()  #name space array
     nsta=[]
     for i in nsa:
-        t=ConfigTree.mtfc("namespace "+i)
+        t=ConfigTree.mtfc("namespace;id="+i)
         nsta.append(t)
         t.parent=root
     root.children=[netc,secc,xdrc,serc]+nsta
@@ -78,6 +78,7 @@ def thirdSubTask():
 def getAllNamespaces():
     q=subprocess.Popen(['aql','-c',"SHOW NAMESPACES"],stdout=subprocess.PIPE)
     stdout,stderr=q.communicate()
+    stdout=stdout.decode('utf-8')
     stdout=stdout.split('\n')
     stdout=stdout[4:]
     arr=[]
