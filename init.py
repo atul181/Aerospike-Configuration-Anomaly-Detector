@@ -67,7 +67,7 @@ def thirdSubTask():
     nsa=getAllNamespaces()  #name space array
     nsta=[]
     for i in nsa:
-        t=ConfigTree.mtfc("namespace;id="+i)
+        t=ConfigTree.mtfc("namespace",id=i)
         nsta.append(t)
         t.parent=root
     root.children=[netc,secc,xdrc,serc]+nsta

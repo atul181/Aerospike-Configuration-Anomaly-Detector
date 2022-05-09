@@ -239,7 +239,7 @@ class ConfigTree:
         _stringify(root,-2)
         return ''.join(ConfigTree.config)
     
-    def mtfc(ctx,conf='',isConfigAvailable=False):
+    def mtfc(ctx,id=None,conf='',isConfigAvailable=False):
         # make tree from context
         # ctx is context
         #ctx is the root of tree
@@ -248,7 +248,10 @@ class ConfigTree:
         cl=conf.split('\n')
         #print(cl)
         root=ConfigTree()
-        root.data=ctx
+        if not id:
+            root.data=ctx
+        else:
+            root.data=ctx+' '+id
         for l in range(len(cl)):
             if not hasalnum(cl[l]):
                 continue
