@@ -1,10 +1,91 @@
-import threading
-class Foo (threading.Thread):
-    def __init__(self,x):
-        self.__x = x
-        threading.Thread.__init__(self)
-    def run (self):
-          print(str(self.__x))
+from ConfigTree import ConfigTree
 
-for x in range(20):
-    Foo(x).start()
+conf='''
+advertise-ipv6=false
+auto-pin=none
+batch-index-threads=4
+batch-max-buffers-per-queue=255
+batch-max-requests=5000
+batch-max-unused-buffers=256
+cluster-name=null
+debug-allocations=none
+disable-udf-execution=false
+downgrading=false
+enable-benchmarks-fabric=false
+enable-health-check=false
+enable-hist-info=false
+enforce-best-practices=false
+feature-key-file[0]=/etc/aerospike/features.conf
+indent-allocations=false
+info-threads=16
+keep-caps-ssd-health=false
+log-local-time=false
+log-millis=false
+microsecond-histograms=false
+migrate-fill-delay=0
+migrate-max-num-incoming=4
+migrate-threads=1
+min-cluster-size=1
+node-id=BB90DAD00290C00
+node-id-interface=null
+os-group-perms=false
+pidfile=null
+proto-fd-idle-ms=0
+proto-fd-max=15000
+query-max-done=100
+query-threads-limit=128
+run-as-daemon=true
+salt-allocations=false
+service-threads=20
+sindex-builder-threads=4
+sindex-gc-period=10
+stay-quiesced=false
+ticker-interval=10
+transaction-max-ms=1000
+transaction-retry-ms=1002
+vault-ca=null
+vault-path=null
+vault-token-file=null
+vault-url=null
+work-directory=/opt/aerospike
+service.access-port=0
+service.address=any
+service.alternate-access-port=0
+service.port=3000
+service.tls-port=0
+service.tls-access-port=0
+service.tls-alternate-access-port=0
+service.tls-name=null
+service.disable-localhost=false
+heartbeat.mode=multicast
+heartbeat.multicast-group=239.1.99.222
+heartbeat.port=9918
+heartbeat.multicast-ttl=0
+heartbeat.interval=150
+heartbeat.timeout=10
+heartbeat.connect-timeout-ms=500
+heartbeat.mtu=1500
+heartbeat.protocol=v3
+fabric.tls-port=0
+fabric.tls-name=null
+fabric.channel-bulk-fds=2
+fabric.channel-bulk-recv-threads=4
+fabric.channel-ctrl-fds=1
+fabric.channel-ctrl-recv-threads=4
+fabric.channel-meta-fds=1
+fabric.channel-meta-recv-threads=4
+fabric.channel-rw-fds=8
+fabric.channel-rw-recv-pools=1
+fabric.channel-rw-recv-threads=16
+fabric.keepalive-enabled=true
+fabric.keepalive-intvl=1
+fabric.keepalive-probes=10
+fabric.keepalive-time=1
+fabric.port=3001
+fabric.recv-rearm-threshold=1024
+fabric.send-threads=8
+info.port=3003
+'''
+
+root=ConfigTree.mtfc('None',conf=conf,isConfigAvailable=True)
+print(ConfigTree.stringify(root))

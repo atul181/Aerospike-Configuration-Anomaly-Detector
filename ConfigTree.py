@@ -3,6 +3,7 @@ Create an object of this class with a none parent( which is by default) and call
 '''
 
 import copy
+import subprocess
 
 
 class ConfigTree:
@@ -18,7 +19,7 @@ class ConfigTree:
 
     def __init__(self,parent=None):
         self.data=None
-        self.parent=None
+        self.parent=parent
         self.children=[]
 
     def getParentData(text,ptr):
@@ -237,10 +238,71 @@ class ConfigTree:
 
         _stringify(root,-2)
         return ''.join(ConfigTree.config)
+    
+    def mtfc(ctx,conf='',isConfigAvailable=False):
+        # make tree from context
+        # ctx is context
+        #ctx is the root of tree
+        if not isConfigAvailable:
+            conf=subprocess.run(["asinfo","-v","get-config:context="+ctx,"-l"],capture_output=True).stdout.decode("utf-8")
+        cl=conf.split('\n')
+        #print(cl)
+        root=ConfigTree()
+        root.data=ctx
+        for l in range(len(cl)):
+            if not hasalnum(cl[l]):
+                continue
+            params,val=cl[l].split('=')
+            params=params.split('.')
+            arr=root.children
+            parent=root
+            i=0
+            while i<len(params):
+                j=0
+                if len(arr)==0:
+                    nn=ConfigTree(parent=parent)
+                    nn.data=params[i]
+                    parent.children.append(nn)
+                    parent=nn
+                    arr=[]
+                    i+=1
+                    continue
+                while j<len(arr):
+                    #print(arr)
+                    if arr[j].data==params[i]:
+                        parent=arr[j]
+                        arr=arr[j].children
+                        j=0
+                        i+=1
+                        continue
+                    elif j==len(arr)-1:
+                        #print(parent.data)
+                        nc=ConfigTree(parent=parent)
+                        nc.data=params[i]
+                        #print(params[i])
+                        #print(nc.parent)
+                        nc.parent.children.append(nc)
+                        parent=nc
+                        arr=[]
+                        j=0
+                        i+=1
+                        continue
+                    j+=1
+            parent.data+=' '+val
+        return root 
+
+
+
+            
+
 
     
 
-             
+def hasalnum(s):
+    for i in range(len(s)):
+        if s[i].isalnum():
+            return True
+    return False     
             
 
 
