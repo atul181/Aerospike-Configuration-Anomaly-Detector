@@ -109,8 +109,8 @@ class ConfigTree:
     def isSame(text1,text2):
         root1=ConfigTree()
         root2=ConfigTree()
-        conf1=ConfigTree.process(text1,0,root1)
-        conf2=ConfigTree.process(text2,0,root2)
+        ConfigTree.process(text1,0,root1)
+        ConfigTree.process(text2,0,root2)
         path1=ConfigTree.genPaths(root1)
         ConfigTree.paths=[]
         path2=ConfigTree.genPaths(root2)
@@ -300,6 +300,7 @@ class ConfigTree:
     def mccf3t(froot,rroot):
         #make correct config for 3rd task
         #froot is file root and rroot is runtime root
+        #returns correct root
         q=[froot]
         pathd={}
         while q:

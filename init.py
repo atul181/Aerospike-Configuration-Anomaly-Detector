@@ -71,8 +71,16 @@ def thirdSubTask():
         nsta.append(t)
         t.parent=root
     root.children=[netc,secc,xdrc,serc]+nsta
-    #run time tree is complete
-    nconf=ConfigTree.stringify(root)
+    #run time tree is complete and is present as root variable here
+    rroot=root
+    fconf=open(conf_location,"r").read()
+    fct=ConfigTree()
+    ConfigTree.process(fconf,0,fct)
+    verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot))
+    if verd:
+        return 
+    correctroot=ConfigTree.mccf3t(froot,rroot)
+    nconf=ConfigTree.stringify(correctroot)
     open(conf_location,'w').write(nconf)
         
 
