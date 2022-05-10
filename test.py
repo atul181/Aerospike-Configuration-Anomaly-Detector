@@ -1,28 +1,29 @@
 from ConfigTree import ConfigTree
 
-
-conf='''show namspaces
---------------
-| namespaces |
---------------
-|   "test"   |
-|   "prac"   |
---------------
-ok envbvubb 
-
-
+fconf='''
+A {
+  B 9
+}
+B { C 8 }
+D {
+  E 12
+}
 '''
 
-def getAllNamespaces(stdout):
-    print(stdout)
-    stdout=stdout.split('\n')
-    stdout=stdout[4:]
-    arr=[]
-    for l in stdout:
-        try:
-          arr.append(l.split("\"")[1])
-        except:
-            pass
-    return arr
+rconf='''
+A {
+  B 9
+}
+B { 
+  C 32
+ }
+ D {
+  E 32
+  F {
+    K 99999
+  }
+'''
 
-print(getAllNamespaces(conf))
+verd,froot,rroot=ConfigTree.isSame(fconf,rconf)
+print(verd)
+print(ConfigTree.stringify(ConfigTree.mccf3t(froot,rroot)))

@@ -71,6 +71,7 @@ def thirdSubTask():
         nsta.append(t)
         t.parent=root
     root.children=[netc,secc,xdrc,serc]+nsta
+    #run time tree is complete
     nconf=ConfigTree.stringify(root)
     open(conf_location,'w').write(nconf)
         

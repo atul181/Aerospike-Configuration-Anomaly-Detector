@@ -293,7 +293,57 @@ class ConfigTree:
                     j+=1
             parent.data+=' '+val
         return root 
+    
+    def mccf3t(froot,rroot):
+        #make correct config for 3rd task
+        #froot is file root and rroot is runtime root
+        q=[froot]
+        pathd={}
+        while q:
+            node=q.pop(0)
+            if len(node.children):
+                q+=node.children
+                continue
+            path=[]
+            temp=node
+            while node:
+                path+=[node.data]
+                node=node.parent
+            #print(path)
+            path=path[::-1]
+            path[-1]=' '.join(path[-1].split()[:-1])
+            #print(path)
+            if pathd.get(' '.join(path[1:]),0)==0:
+                pathd[' '.join(path[1:])]=0
+            else:
+                pathd[' '.join(path[1:])]+=1
+            temp.data=ConfigTree.glv3(rroot,path,pathd[' '.join(path[1:])],temp.data)
+        return froot
 
+    def glv3(root,path,count,default):
+        #get leaf value for 3rd task
+        lcount=0
+        i=0
+        q=[root]
+        while i<len(path):
+            j=0
+            while j<len(q):
+                #print(path[i],q[j].data,count,lcount)
+                #print(path[i],q[j].data)
+                if path[i]==q[j].data:
+                    q=q[j].children
+                    j=0
+                    i+=1
+                    continue
+                elif i==len(path)-1 and len(q[j].children)==0 and path[i] in q[j].data:
+                    if q[j].data.split()[:-1]==path[i].split() and lcount==count:
+                        return q[j].data
+                    elif q[j].data.split()[:-1]==path[i].split()[:-1]:
+                        lcount+=1
+                elif j==len(q)-1:
+                    return default
+                j+=1
+            
 
 
             
