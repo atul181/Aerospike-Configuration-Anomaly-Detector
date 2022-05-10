@@ -244,7 +244,10 @@ class ConfigTree:
         # ctx is context
         #ctx is the root of tree
         if not isConfigAvailable:
-            conf=subprocess.run(["asinfo","-v","get-config:context="+ctx,"-l"],capture_output=True).stdout.decode("utf-8")
+            if not id:
+               conf=subprocess.run(["asinfo","-v","get-config:context="+ctx,"-l"],capture_output=True).stdout.decode("utf-8")
+            else:
+                conf=subprocess.run(["asinfo","-v","get-config:context="+ctx,";id=",id,"-l"],capture_output=True).stdout.decode("utf-8")
         cl=conf.split('\n')
         #print(cl)
         root=ConfigTree()
