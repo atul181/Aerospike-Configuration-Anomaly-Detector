@@ -2,18 +2,18 @@ from ConfigTree import ConfigTree
 
 fconf='''
 A {
+  B 999
   B 9
-  address 14
+  B 42
 }
 B { C 8 }
 '''
 
 rconf='''
 A {
+  B 42
+  B 999
   B 9
-  B 32
-  B 64
-  B 98
 }
 B { 
   C 32
