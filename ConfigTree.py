@@ -356,6 +356,7 @@ class ConfigTree:
         Get wrong params from slave
         mroot is master root
         sroot is slave root
+        returns a list of paths that have wrong values in their leafs.
         '''
         wp=[] #wrong paths
         mpcount={}
