@@ -365,14 +365,12 @@ class ConfigTree:
         for i in range(len(mpaths)):
             mpaths[i][0]='None'
             pwpol='.'.join(mpaths[i][:-1]+mpaths[i][-1].split()[:-1])
-            #print(pwpol)
-            #path with part of leaf
             if mpcount.get(pwpol,0)==0:
                 mpcount[pwpol]=1
             else:
                 mpcount[pwpol]+=1
-            foundipath=False
             for j in range(len(spaths)):
+                spcount={}
                 spaths[j][0]='None'
                 spwpol='.'.join(spaths[j][:-1]+spaths[j][-1].split()[:-1])
                 if spcount.get(spwpol,0)==0:
@@ -384,6 +382,7 @@ class ConfigTree:
                     if spcount[spwpol]==mpcount[pwpol]:
                         break
                     elif j==len(spaths)-1:
+                        print(spcount[spwpol],mpcount[pwpol])
                         wp.append('.'.join(pwpol.split('.')[1:]))
                 else:
                     if pwpol.split('.')[-1] in ConfigTree.forbidden:
