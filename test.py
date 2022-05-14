@@ -2,24 +2,18 @@ from ConfigTree import ConfigTree
 
 fconf='''
 A {
-  B 999
   B 9
-  B 42
+  C 13
+  D { K 9 }
 }
-B { C 8 }
+
 '''
 
 rconf='''
 A {
-  B 42
-  B 999
   B 9
+  D { K 12 }
 }
-B { 
-  C 32
- }
- D {
-  }
 '''
 
 r1=ConfigTree()
