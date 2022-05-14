@@ -90,6 +90,9 @@ class ConfigTree:
         ConfigTree.process(text,nnptr,father)
 
     def genPaths(root):
+        '''
+        Output is a list : [[None, 'A', 'B 9'], [None, 'B', 'C 32'], [None, 'D']]
+        '''
         ConfigTree.paths=[]
         def getPaths(root,path):
             if not root:
@@ -347,7 +350,50 @@ class ConfigTree:
                 elif j==len(q)-1:
                     return default
                 j+=1
-            
+    
+    def gwpfs(mroot,sroot):
+        '''
+        Get wrong params from slave
+        mroot is master root
+        sroot is slave root
+        '''
+        wp=[] #wrong paths
+        mpcount={}
+        spcount={}
+        mpaths=ConfigTree.genPaths(mroot)
+        spaths=ConfigTree.genPaths(sroot)
+        for i in range(len(mpaths)):
+            mpaths[i][0]='None'
+            pwpol='.'.join(mpaths[i][:-1]+mpaths[i][-1].split()[:-1])
+            #print(pwpol)
+            #path with part of leaf
+            if mpcount.get(pwpol,0)==0:
+                mpcount[pwpol]=1
+            else:
+                mpcount[pwpol]+=1
+            foundipath=False
+            for j in range(len(spaths)):
+                spaths[j][0]='None'
+                spwpol='.'.join(spaths[j][:-1]+spaths[j][-1].split()[:-1])
+                if spcount.get(spwpol,0)==0:
+                    spcount[spwpol]=1
+                else:
+                    spcount[spwpol]+=1
+                #matching starts here
+                if mpaths[i]==spaths[j]:
+                    if spcount[spwpol]==mpcount[pwpol]:
+                        break
+                    elif j==len(spaths)-1:
+                        wp.append('.'.join(pwpol.split('.')[1:]))
+                else:
+                    if pwpol.split('.')[-1] in ConfigTree.forbidden:
+                        break
+                    elif pwpol==spwpol:
+                        if spcount[spwpol]==mpcount[pwpol]:
+                            wp.append('.'.join(pwpol.split('.')[1:]))
+        return wp
+
+
 
 
             
