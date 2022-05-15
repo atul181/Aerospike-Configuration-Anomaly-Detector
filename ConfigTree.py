@@ -4,6 +4,7 @@ Create an object of this class with a none parent( which is by default) and call
 
 import copy
 import subprocess
+from xml.etree.ElementInclude import include
 
 
 class ConfigTree:
@@ -351,7 +352,7 @@ class ConfigTree:
                     return default
                 j+=1
     
-    def gwpfs(mroot,sroot):
+    def gwpfs(mroot,sroot,includeExtra=False):
         '''
         Get wrong params from slave
         mroot is master root
@@ -370,8 +371,8 @@ class ConfigTree:
                 mpcount[pwpol]=1
             else:
                 mpcount[pwpol]+=1
+            spcount={}
             for j in range(len(spaths)):
-                spcount={}
                 spaths[j][0]='None'
                 spwpol='.'.join(spaths[j][:-1]+spaths[j][-1].split()[:-1])
                 if spcount.get(spwpol,0)==0:
@@ -390,6 +391,10 @@ class ConfigTree:
                     elif pwpol==spwpol:
                         if spcount[spwpol]==mpcount[pwpol]:
                             wp.append('.'.join(pwpol.split('.')[1:]))
+                        elif j==len(spaths)-1 and includeExtra:
+                            wp.append('.'.join(pwpol.split('.')[1:]))
+                    elif j==len(spaths)-1 and includeExtra:
+                        wp.append('.'.join(pwpol.split('.')[1:]))
         return wp
 
 

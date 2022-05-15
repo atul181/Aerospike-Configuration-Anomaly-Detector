@@ -3,7 +3,8 @@ from ConfigTree import ConfigTree
 fconf='''
 A {
   B 9
-  C 13
+  B 13
+  D 4
 }
 
 '''
@@ -11,12 +12,11 @@ A {
 rconf='''
 A {
   B 9
-  D { K 9 }
+  D 4
 }
 '''
 
 r1=ConfigTree()
 r2=ConfigTree()
-ConfigTree.process(rconf,0,r1)
-ConfigTree.process(fconf,0,r2)
-print(ConfigTree.gwpfs(r1,r2))
+verd,a,b=ConfigTree.isSame(rconf,fconf)
+print(verd)
