@@ -357,6 +357,7 @@ class ConfigTree:
         Get wrong params from slave
         mroot is master root
         sroot is slave root
+        If includeExtra is true then it will get all paths that are not present in slave but in master they are present.
         returns a list of paths that have wrong values in their leafs.
         '''
         wp=[] #wrong paths
@@ -384,17 +385,17 @@ class ConfigTree:
                     if spcount[spwpol]==mpcount[pwpol]:
                         break
                     elif j==len(spaths)-1:
-                        wp.append('.'.join(pwpol.split('.')[1:]))
+                        wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
                 else:
                     if pwpol.split('.')[-1] in ConfigTree.forbidden:
                         break
                     elif pwpol==spwpol:
                         if spcount[spwpol]==mpcount[pwpol]:
-                            wp.append('.'.join(pwpol.split('.')[1:]))
+                            wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
                         elif j==len(spaths)-1 and includeExtra:
-                            wp.append('.'.join(pwpol.split('.')[1:]))
+                            wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
                     elif j==len(spaths)-1 and includeExtra:
-                        wp.append('.'.join(pwpol.split('.')[1:]))
+                        wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
         return wp
 
 
