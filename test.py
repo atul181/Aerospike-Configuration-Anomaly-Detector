@@ -3,20 +3,19 @@ from ConfigTree import ConfigTree
 fconf='''
 A {
   B 9
+  B 12
+  B 13
 }
-D {
-  k 4
-}
+A { D 9 }
 '''
 
 rconf='''
 A {
-  B c
-  C d
+  B 9
+  B 13
+  D 9
 }
-B {
-  D 8
-}
+
 
 '''
 

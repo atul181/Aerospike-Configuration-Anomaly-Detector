@@ -365,6 +365,7 @@ class ConfigTree:
         spcount={}
         mpaths=ConfigTree.genPaths(mroot)
         spaths=ConfigTree.genPaths(sroot)
+        #print(mpaths,'\n',spaths)
         for i in range(len(mpaths)):
             mpaths[i][0]='None'
             pwpol='.'.join(mpaths[i][:-1]+mpaths[i][-1].split()[:-1])
@@ -386,6 +387,7 @@ class ConfigTree:
                         break
                     elif j==len(spaths)-1:
                         wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
+                        break
                 else:
                     if pwpol.split('.')[-1] in ConfigTree.forbidden:
                         break
