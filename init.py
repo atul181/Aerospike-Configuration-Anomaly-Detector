@@ -138,6 +138,7 @@ for i in range(len(addrs)):
         else:
             os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
             doClientWork(addrs[i])
+            thirdSubTask()
             break
 
          
