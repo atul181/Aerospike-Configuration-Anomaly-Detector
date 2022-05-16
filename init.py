@@ -14,6 +14,7 @@ import time
 
 app_start_command="python3 flaskserver.py"
 conf_location="aerospike.conf"
+log_fpath="log"
 duration=3 #seconds
 
 
@@ -79,9 +80,15 @@ def thirdSubTask():
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot))
     if verd:
         return 
-    correctroot=ConfigTree.mccf3t(froot,rroot)
-    nconf=ConfigTree.stringify(correctroot)
-    open(conf_location,'w').write(nconf)
+    paths=ConfigTree.gwpfs(rroot,froot)
+    f=open(log_fpath,"w")
+    s=''
+    for p in paths:
+        s+=p+'\n'
+    f.write('Runtime config difference\n'+s)
+    f.close()
+    sendREvent()
+    
         
 
 def getAllNamespaces():
@@ -99,6 +106,8 @@ def getAllNamespaces():
     return arr
                 
 
+def sendREvent(service=None,description=None):
+    pass
 
 def doClientWork(maddr):
     try:
@@ -110,11 +119,14 @@ def doClientWork(maddr):
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
         return
-    msconfig=ConfigTree.makeCorrectConfig(mtree,stree)
-    f=open(conf_location,"w")
-    f.write(ConfigTree.stringify(msconfig))
+    paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
+    f=open(log_fpath,"w")
+    s=''
+    for p in paths:
+        s+=p+'\n'
+    f.write('Peer configuration difference\n'+s)
     f.close()
-
+    sendREvent()
 
 addrs=HostsFinder.getAddresses()
 addrs.sort()

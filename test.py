@@ -3,16 +3,21 @@ from ConfigTree import ConfigTree
 fconf='''
 A {
   B 9
-  D 4
 }
-
+D {
+  k 4
+}
 '''
 
 rconf='''
 A {
-  B 9
+  B c
+  C d
 }
-A { D 3 }
+B {
+  D 8
+}
+
 '''
 
 r1=ConfigTree()

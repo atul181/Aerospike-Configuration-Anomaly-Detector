@@ -392,10 +392,13 @@ class ConfigTree:
                     elif pwpol==spwpol:
                         if spcount[spwpol]==mpcount[pwpol]:
                             wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
+                            break
                         elif j==len(spaths)-1 and includeExtra:
                             wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
+                            break
                     elif j==len(spaths)-1 and includeExtra:
                         wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
+                        break
         return wp
 
 
