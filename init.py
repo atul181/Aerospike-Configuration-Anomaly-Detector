@@ -81,7 +81,7 @@ def thirdSubTask():
     if verd:
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
-    f=open(log_fpath,"w")
+    f=open(log_fpath,"a")
     s=''
     for p in paths:
         s+=p+'\n'

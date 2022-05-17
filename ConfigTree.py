@@ -110,7 +110,7 @@ class ConfigTree:
         return ConfigTree.paths
     
 
-    def isSame(text1,text2):
+    def isSame(text1,text2,ignoreExtra=False):
         root1=ConfigTree()
         root2=ConfigTree()
         ConfigTree.process(text1,0,root1)
@@ -148,9 +148,14 @@ class ConfigTree:
         #print(p1count,p2count)
         #print(len(path1))
         #print(f1,f2)
-        if p1count==p2count and f1==f2 and (p1count+f1==len(path1)):
-            return True,root1,root2
-        return False,root1,root2
+        if not ignoreExtra:
+            if p1count==p2count and f1==f2 and (p1count+f1==len(path1)):
+               return True,root1,root2
+            return False,root1,root2
+        else:
+            if (p1count+f1)==len(path1):
+                return True,root1,root2
+            return False,root1,root2
 
 
     def getLeafValue(root,path,fb,count,default):
