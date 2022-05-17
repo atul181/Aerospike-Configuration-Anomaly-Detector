@@ -436,31 +436,29 @@ class ConfigTree:
         '''
         retlist=[]
         kvi=ops[0][1].split(';')
-        ref=list(kvi)
         #ref is refernce of param names
         for i in range(len(ops)):
             kv=ops[i][1].split(';')
             bin=lognode.children[i]
-            flogc=list(ref)
+            flogc=list(kv)
             #file log conf
             for ch in bin.children:
                 ctx,ranger,value=ch.data.split()
+                #print(ctx,ranger,value)
                 if ranger=="any":
                     for j in range(len(flogc)):
                         key,val=flogc[j].split(':')
                         val=value
-                        flogc[j]=':'.join(str(key)+str(val))
+                        flogc[j]=':'.join([key,val])
                 else:
                     for j in range(len(flogc)):
                         if flogc[j].split(':')[0]==ranger:
-                            print(flogc[j])
                             key,val=flogc[j].split(':')
                             val=value
                             flogc[j]=':'.join([key,val])
-                flogc=';'.join(flogc)
-                if flogc!=ops[i][1]:
-                   print(flogc,ops[i][1])
-                   retlist.append(lognode.children[i].data)
+            flogc=';'.join(flogc)
+            if flogc!=ops[i][1]:
+                retlist.append(lognode.children[i].data)
         if retlist==[]:
             return True,[]
         else:
