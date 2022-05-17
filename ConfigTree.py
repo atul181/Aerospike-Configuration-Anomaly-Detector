@@ -16,6 +16,9 @@ class ConfigTree:
         'address',
 
     ]
+    dncc=[
+        ''
+    ]
     config=[]
 
     def __init__(self,parent=None):
@@ -256,7 +259,7 @@ class ConfigTree:
             if not id:
                conf=subprocess.run(["asinfo","-v","get-config:context="+ctx,"-l"],capture_output=True).stdout.decode("utf-8")
             else:
-                conf=subprocess.run(["asinfo","-v","get-config:context="+ctx,";id=",id,"-l"],capture_output=True).stdout.decode("utf-8")
+                conf=subprocess.run(["asinfo","-v",'"get-config:context='+ctx,';id=',id+'"',"-l"],capture_output=True).stdout.decode("utf-8")
         cl=conf.split('\n')
         #print(cl)
         root=ConfigTree()
@@ -268,6 +271,8 @@ class ConfigTree:
             if not hasalnum(cl[l]):
                 continue
             params,val=cl[l].split('=')
+            if ':' in val:
+                val=' '.join(val.split(':'))
             params=params.split('.')
             arr=root.children
             parent=root
@@ -407,6 +412,64 @@ class ConfigTree:
                         wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
                         break
         return wp
+    
+    def cflc(froot,ops=None):
+        '''
+        check file log config
+        '''
+        for i in range(len(froot.children)):
+            if froot.children[i].data=="logging":
+                lognode=froot.children[i]
+                break
+        i=0
+        '''
+        ops=[]
+        while 1:
+            op=subprocess.run(["asinfo","-v",'"log/'+str(i)+'"'],capture_output=True).stdout.decode("utf-8")
+            if "ERROR" in op:
+                break
+            ops.append([i,op])
+            i+=1
+
+        if len(lognode.children)!=i-1:
+            return False,["logging.*"]
+        '''
+        retlist=[]
+        kvi=ops[0][1].split(';')
+        ref=list(kvi)
+        #ref is refernce of param names
+        for i in range(len(ops)):
+            kv=ops[i][1].split(';')
+            bin=lognode.children[i]
+            flogc=list(ref)
+            #file log conf
+            for ch in bin.children:
+                ctx,ranger,value=ch.data.split()
+                if ranger=="any":
+                    for j in range(len(flogc)):
+                        key,val=flogc[j].split(':')
+                        val=value
+                        flogc[j]=':'.join(str(key)+str(val))
+                else:
+                    for j in range(len(flogc)):
+                        if flogc[j].split(':')[0]==ranger:
+                            print(flogc[j])
+                            key,val=flogc[j].split(':')
+                            val=value
+                            flogc[j]=':'.join([key,val])
+                flogc=';'.join(flogc)
+                if flogc!=ops[i][1]:
+                   print(flogc,ops[i][1])
+                   retlist.append(lognode.children[i].data)
+        if retlist==[]:
+            return True,[]
+        else:
+            return False,retlist
+                
+
+
+
+
 
 
 
