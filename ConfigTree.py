@@ -456,9 +456,12 @@ class ConfigTree:
                             key,val=flogc[j].split(':')
                             val=value
                             flogc[j]=':'.join([key,val])
-            flogc=';'.join(flogc)
-            if flogc!=ops[i][1]:
-                retlist.append(lognode.children[i].data)
+            temp=ops[i][1].split(';')
+            for k in range(len(flogc)):
+                if flogc[k] not in temp:
+                    print(flogc[k],temp)
+                    retlist.append(lognode.children[i].data)
+                    break
         if retlist==[]:
             return True,[]
         else:
