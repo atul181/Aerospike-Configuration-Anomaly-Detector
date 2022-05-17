@@ -413,16 +413,16 @@ class ConfigTree:
                         break
         return wp
     
-    def cflc(froot,ops=None):
+    def cflc(froot):
         '''
         check file log config
+        This is to be used only in 3rd subtask.
         '''
         for i in range(len(froot.children)):
             if froot.children[i].data=="logging":
                 lognode=froot.children[i]
                 break
         i=0
-        '''
         ops=[]
         while 1:
             op=subprocess.run(["asinfo","-v",'"log/'+str(i)+'"'],capture_output=True).stdout.decode("utf-8")
@@ -433,7 +433,6 @@ class ConfigTree:
 
         if len(lognode.children)!=i-1:
             return False,["logging.*"]
-        '''
         retlist=[]
         kvi=ops[0][1].split(';')
         #ref is refernce of param names
