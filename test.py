@@ -3,21 +3,24 @@ from ConfigTree import ConfigTree
 fconf='''
 A {
   B 9
-  K 8
+  K 4G
+  Z 4
+  D 9
+  C K
 }
 '''
 
 rconf='''
 A {
   B 9
-  K 8
-  B 9
-  B 9
-  B 9
+  K 4G
+  C K
+  Z 4
+  D 9 
 }
 '''
 
-for _ in range(10):
-    verd,rroot,froot=ConfigTree.isSame(rconf,fconf)
-    print(verd)
-    print(ConfigTree.gwpfs(rroot,froot))
+
+verd,froot,rroot=ConfigTree.isSame(fconf,rconf)
+print(verd)
+print(ConfigTree.gwpfs(rroot,froot,includeExtra=True))

@@ -133,8 +133,11 @@ class ConfigTree:
                 continue
             for line2 in path2:
                 if line1==line2:
-                    #print(line1,line2)
                     p1count+=1
+                    break
+                elif ignoreExtra and ConfigTree.cnfp(line1,line2):
+                    p1count+=1
+                    break
         for line2 in path1:
             flag=0
             for forb in ConfigTree.forbidden:
@@ -147,11 +150,12 @@ class ConfigTree:
             for line1 in path2:
                 if line2==line1:
                     p2count+=1
+                    break
         #print(p1count,p2count)
         #print(len(path1))
         #print(f1,f2)
         if not ignoreExtra:
-            if p1count==p2count and f1==f2 and (p1count+f1==len(path1)):
+            if p1count==p2count and f1==f2 and (p1count+f1==len(path1)) and (p2count+f2==len(path2)):
                return True,root1,root2
             return False,root1,root2
         else:
@@ -396,9 +400,6 @@ class ConfigTree:
                 if mpaths[i]==spaths[j]:
                     if spcount[spwpol]==mpcount[pwpol]:
                         break
-                    elif j==len(spaths)-1:
-                        wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
-                        break
                 else:
                     if pwpol.split('.')[-1] in ConfigTree.forbidden:
                         break
@@ -466,6 +467,35 @@ class ConfigTree:
             return True,[]
         else:
             return False,retlist
+
+    def cnfp(path1,path2):
+        key,val1=path1[-1].split()
+        tp1=path1[:-1]+[key]
+        key,val2=path2[-1].split()
+        tp2=path2[:-1]+[key]
+        if tp1==tp2:
+            num=''
+            for i in range(len(val1)):
+                if val1[i].isnumeric():
+                    num+=val1[i]
+                else:
+                    break
+            unit=val1[i:]
+            if num=='':
+                return False
+            if unit=='G' or unit=="GiB":
+                mult=1073741824
+            elif unit=='T' or unit=="TiB":
+                mult=1099511627776
+            elif unit=='M' or unit=="MiB":
+                mult=1048576
+            elif unit=="K" or unit=="KiB":
+                mult=1024
+            else:
+                return False
+            if int(num)*mult==int(val2):
+                return True
+            return False
                 
 
 
