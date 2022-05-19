@@ -121,6 +121,7 @@ class ConfigTree:
         path1=ConfigTree.genPaths(root1)
         ConfigTree.paths=[]
         path2=ConfigTree.genPaths(root2)
+        ConfigTree.paths=[]
         p1count,p2count=0,0
         f1,f2=0,0
         for line1 in path1:
@@ -230,6 +231,7 @@ class ConfigTree:
             return root1
             
     def stringify(root):
+        ConfigTree.config=[]
         def _stringify(root,intent):
           if not root:
             return
@@ -259,7 +261,10 @@ class ConfigTree:
             if not id:
                conf=subprocess.run(["asinfo","-v","get-config:context="+ctx,"-l"],capture_output=True).stdout.decode("utf-8")
             else:
-                conf=subprocess.run(["asinfo","-v",'"get-config:context='+ctx,';id=',id+'"',"-l"],capture_output=True).stdout.decode("utf-8")
+                string='asinfo -v "get-config:context='+ctx+';id='+id+'" -l'
+                conf=subprocess.check_output(string,shell=True,universal_newlines=True)
+        if ctx=="namespace":
+            open("plog","w").write(conf)
         cl=conf.split('\n')
         #print(cl)
         root=ConfigTree()

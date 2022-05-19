@@ -77,11 +77,11 @@ def thirdSubTask():
     fconf=open(conf_location,"r").read()
     fct=ConfigTree()
     ConfigTree.process(fconf,0,fct)
-    verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot))
+    verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
     if verd:
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
-    f=open(log_fpath,"a")
+    f=open(log_fpath,"w")
     s=''
     for p in paths:
         s+=p+'\n'
