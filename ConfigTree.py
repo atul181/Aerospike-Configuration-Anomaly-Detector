@@ -119,9 +119,7 @@ class ConfigTree:
         ConfigTree.process(text1,0,root1)
         ConfigTree.process(text2,0,root2)
         path1=ConfigTree.genPaths(root1)
-        ConfigTree.paths=[]
         path2=ConfigTree.genPaths(root2)
-        ConfigTree.paths=[]
         p1count,p2count=0,0
         f1,f2=0,0
         for line1 in path1:
@@ -263,8 +261,6 @@ class ConfigTree:
             else:
                 string='asinfo -v "get-config:context='+ctx+';id='+id+'" -l'
                 conf=subprocess.check_output(string,shell=True,universal_newlines=True)
-        if ctx=="namespace":
-            open("plog","w").write(conf)
         cl=conf.split('\n')
         #print(cl)
         root=ConfigTree()
@@ -463,7 +459,6 @@ class ConfigTree:
             temp=ops[i][1].split(';')
             for k in range(len(flogc)):
                 if flogc[k] not in temp:
-                    print(flogc[k],temp)
                     retlist.append(lognode.children[i].data)
                     break
         if retlist==[]:
@@ -474,25 +469,10 @@ class ConfigTree:
 
 
 
-
-
-
-
-
-            
-
-
-    
-
 def hasalnum(s):
     for i in range(len(s)):
         if s[i].isalnum():
             return True
     return False     
             
-
-
-        
-
-
         
