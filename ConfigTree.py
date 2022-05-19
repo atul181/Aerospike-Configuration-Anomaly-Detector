@@ -432,7 +432,7 @@ class ConfigTree:
             ops.append([i,op])
             i+=1
 
-        if len(lognode.children)!=i-1:
+        if len(lognode.children)!=i:
             return False,["logging.*"]
         retlist=[]
         kvi=ops[0][1].split(';')
