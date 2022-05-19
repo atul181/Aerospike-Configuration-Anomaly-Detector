@@ -429,6 +429,7 @@ class ConfigTree:
             op=subprocess.run(["asinfo","-v",'"log/'+str(i)+'"'],capture_output=True).stdout.decode("utf-8")
             if "ERROR" in op:
                 break
+            op=op[:-1]
             ops.append([i,op])
             i+=1
 
