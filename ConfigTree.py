@@ -449,13 +449,13 @@ class ConfigTree:
                     for j in range(len(flogc)):
                         key,val=flogc[j].split(':')
                         val=value
-                        flogc[j]=':'.join([key,val])
+                        flogc[j]=':'.join([key,val.upper()])
                 else:
                     for j in range(len(flogc)):
                         if flogc[j].split(':')[0]==ranger:
                             key,val=flogc[j].split(':')
                             val=value
-                            flogc[j]=':'.join([key,val])
+                            flogc[j]=':'.join([key,val.upper()])
             temp=ops[i][1].split(';')
             for k in range(len(flogc)):
                 if flogc[k] not in temp:

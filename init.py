@@ -78,9 +78,11 @@ def thirdSubTask():
     fct=ConfigTree()
     ConfigTree.process(fconf,0,fct)
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
-    if verd:
+    lverd,changelist=ConfigTree.cflc(froot)
+    if verd and lverd:
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
+    paths+=changelist
     f=open(log_fpath,"w")
     s=''
     for p in paths:
