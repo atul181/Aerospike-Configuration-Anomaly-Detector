@@ -5,7 +5,7 @@ A {
   B 9
   K 4G
   Z 4
-  D 9
+  tls-name null
   C K
 }
 '''
@@ -14,7 +14,7 @@ rconf='''
 A {
   B 9
   K 4G
-  C K
+  tls-name null
   Z 4
   D 9 
 }

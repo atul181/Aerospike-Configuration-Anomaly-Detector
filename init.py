@@ -13,7 +13,7 @@ import time
 
 
 app_start_command="python3 flaskserver.py"
-conf_location="aerospike.conf"
+conf_location="/etc/aerospike/aerospike.conf"
 log_fpath="log"
 duration=3 #seconds
 
@@ -55,6 +55,8 @@ def secondSubTask():
     pass
 
 def thirdSubTask():
+    import sys
+    sys.stdout=open("plog","a")
     root=ConfigTree()
     root.data=None
     netc=ConfigTree.mtfc('network')
@@ -79,6 +81,7 @@ def thirdSubTask():
     ConfigTree.process(fconf,0,fct)
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
     lverd,changelist=ConfigTree.cflc(froot)
+    print(verd,lverd)
     if verd and lverd:
         return 
     paths=ConfigTree.gwpfs(rroot,froot)

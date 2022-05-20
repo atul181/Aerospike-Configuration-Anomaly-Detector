@@ -138,6 +138,9 @@ class ConfigTree:
                 elif ignoreExtra and ConfigTree.cnfp(line1,line2):
                     p1count+=1
                     break
+                elif ignoreExtra and 'logging' in line1:
+                    p1count+=1
+                    break
         for line2 in path1:
             flag=0
             for forb in ConfigTree.forbidden:
@@ -400,6 +403,10 @@ class ConfigTree:
                 if mpaths[i]==spaths[j]:
                     if spcount[spwpol]==mpcount[pwpol]:
                         break
+                elif not includeExtra:
+                    if ConfigTree.cnfp(spaths[j],mpaths[i]):
+                        if spcount[spwpol]==mpcount[pwpol]:
+                            break
                 else:
                     if pwpol.split('.')[-1] in ConfigTree.forbidden:
                         break
@@ -469,6 +476,11 @@ class ConfigTree:
             return False,retlist
 
     def cnfp(path1,path2):
+        '''
+        compare number from path
+        '''
+        if len(path1[-1].split())!=2 or len(path2[-1].split())!=2:
+            return False
         key,val1=path1[-1].split()
         tp1=path1[:-1]+[key]
         key,val2=path2[-1].split()
