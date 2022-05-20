@@ -91,7 +91,7 @@ def thirdSubTask(f):
     s=''
     for p in paths:
         s+=p+'\n'
-    f.write('Runtime config difference\n'+s)
+    f.write('\nRuntime config difference\n'+s)
     sendREvent()
     
         
@@ -125,10 +125,18 @@ def doClientWork(maddr,f):
     if isequal:
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
+    if paths==[]:
+        paths=ConfigTree.gwpfs(stree,mtree,includeExtra=True)
+        s=''
+        for p in paths:
+            s+=p+'\n'
+        f.write('\nMaster doesnot have these parameters:\n'+s+'-'*10)
+        sendREvent()
+        return 
     s=''
     for p in paths:
         s+=p+'\n'
-    f.write('Peer configuration difference\n'+s)
+    f.write('\nPeer configuration difference:\n'+s+'-'*10)
     sendREvent()
 
 addrs=HostsFinder.getAddresses()
