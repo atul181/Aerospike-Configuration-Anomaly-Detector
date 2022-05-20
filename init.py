@@ -48,13 +48,15 @@ def tasks():
                     break
                 else:
                     return
-        secondSubTask()
-        thirdSubTask()
+        f=open(log_fpath,"w")
+        secondSubTask(f)
+        thirdSubTask(f)
+        f.close()
 
-def secondSubTask():
+def secondSubTask(f):
     pass
 
-def thirdSubTask():
+def thirdSubTask(f):
     import sys
     sys.stdout=open("plog","a")
     root=ConfigTree()
@@ -86,7 +88,6 @@ def thirdSubTask():
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
     paths+=changelist
-    f=open(log_fpath,"w")
     s=''
     for p in paths:
         s+=p+'\n'
@@ -114,7 +115,7 @@ def getAllNamespaces():
 def sendREvent(service=None,description=None):
     pass
 
-def doClientWork(maddr):
+def doClientWork(maddr,f):
     try:
       r=requests.get("http://"+maddr+":81/conf")
     except requests.exceptions.ConnectionError:
@@ -125,7 +126,6 @@ def doClientWork(maddr):
     if isequal:
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
-    f=open(log_fpath,"w")
     s=''
     for p in paths:
         s+=p+'\n'
@@ -142,8 +142,10 @@ for i in range(len(addrs)):
             startMaster(addrs,i+1)
         else:
             os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
-            doClientWork(addrs[i])
-            thirdSubTask()
+            f=open(log_fpath,"w")
+            doClientWork(addrs[i],f)
+            thirdSubTask(f)
+            f.close()
             break
 
          
