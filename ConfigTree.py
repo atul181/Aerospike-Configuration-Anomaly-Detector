@@ -141,7 +141,7 @@ class ConfigTree:
                 elif ignoreExtra and 'logging' in line1:
                     p1count+=1
                     break
-        for line2 in path1:
+        for line2 in path2:
             flag=0
             for forb in ConfigTree.forbidden:
                 if forb in ' '.join(line2[-1]):
@@ -150,8 +150,8 @@ class ConfigTree:
                     break
             if flag:
                 continue
-            for line1 in path2:
-                if line2==line1:
+            for line1 in path1:
+                if line1==line2:
                     p2count+=1
                     break
         #print(p1count,p2count)
