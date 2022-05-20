@@ -92,7 +92,6 @@ def thirdSubTask(f):
     for p in paths:
         s+=p+'\n'
     f.write('Runtime config difference\n'+s)
-    f.close()
     sendREvent()
     
         
@@ -130,7 +129,6 @@ def doClientWork(maddr,f):
     for p in paths:
         s+=p+'\n'
     f.write('Peer configuration difference\n'+s)
-    f.close()
     sendREvent()
 
 addrs=HostsFinder.getAddresses()
