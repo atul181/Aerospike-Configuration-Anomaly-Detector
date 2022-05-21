@@ -407,6 +407,11 @@ class ConfigTree:
                     if ConfigTree.cnfp(spaths[j],mpaths[i]):
                         if spcount[spwpol]==mpcount[pwpol]:
                             break
+                    else:
+                        if j==len(spaths)-1 and spcount.get(pwpol,0)!=0:
+                            wp.append('.'.join('.'.join(mpaths[i]).split('.')[1:]))
+                            break
+
                 else:
                     if pwpol.split('.')[-1] in ConfigTree.forbidden:
                         break
