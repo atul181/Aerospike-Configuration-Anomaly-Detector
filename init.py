@@ -49,6 +49,8 @@ def tasks():
                 else:
                     return
         f=open(log_fpath,"a")
+        f.write("\nMaster IP: "+getipaddr())
+        f.write("\nSlave  IP: "+getipaddr())
         secondSubTask(f)
         thirdSubTask(f)
         f.write('-'*10+'\n')
@@ -83,7 +85,7 @@ def thirdSubTask(f):
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
     lverd,changelist=ConfigTree.cflc(froot)
     if verd and lverd:
-        f.write("file and runtime configuration: match\n")
+        f.write("\nfile and runtime configuration: match\n")
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
     paths+=changelist
@@ -123,7 +125,7 @@ def doClientWork(maddr,f):
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
-        f.write("master slave configuration: match\n")
+        f.write("\nmaster slave configuration: match\n")
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
     if paths==[]:
@@ -150,6 +152,8 @@ for i in range(len(addrs)):
         else:
             os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
             f=open(log_fpath,"a")
+            f.write("\nMaster IP: "+addrs[i])
+            f.write("\nSlave  IP: "+getipaddr())
             doClientWork(addrs[i],f)
             thirdSubTask(f)
             f.write('-'*10+'\n')
