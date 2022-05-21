@@ -48,7 +48,7 @@ def tasks():
                     break
                 else:
                     return
-        f=open(log_fpath,"w")
+        f=open(log_fpath,"a")
         secondSubTask(f)
         thirdSubTask(f)
         f.close()
@@ -148,7 +148,7 @@ for i in range(len(addrs)):
             startMaster(addrs,i+1)
         else:
             os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
-            f=open(log_fpath,"w")
+            f=open(log_fpath,"a")
             doClientWork(addrs[i],f)
             thirdSubTask(f)
             f.close()
