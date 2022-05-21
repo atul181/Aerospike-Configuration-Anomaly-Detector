@@ -51,7 +51,7 @@ def tasks():
         f=open(log_fpath,"a")
         secondSubTask(f)
         thirdSubTask(f)
-        f.write('-'*10)
+        f.write('-'*10+'\n')
         f.close()
 
 def secondSubTask(f):
@@ -152,7 +152,7 @@ for i in range(len(addrs)):
             f=open(log_fpath,"a")
             doClientWork(addrs[i],f)
             thirdSubTask(f)
-            f.write('-'*10)
+            f.write('-'*10+'\n')
             f.close()
             break
 
