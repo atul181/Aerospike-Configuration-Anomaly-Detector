@@ -57,8 +57,6 @@ def secondSubTask(f):
     pass
 
 def thirdSubTask(f):
-    import sys
-    sys.stdout=open("plog","a")
     root=ConfigTree()
     root.data=None
     netc=ConfigTree.mtfc('network')
@@ -83,8 +81,8 @@ def thirdSubTask(f):
     ConfigTree.process(fconf,0,fct)
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
     lverd,changelist=ConfigTree.cflc(froot)
-    print(verd,lverd)
     if verd and lverd:
+        f.write("file and runtime Configuration: match\n")
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
     paths+=changelist
@@ -107,7 +105,8 @@ def getAllNamespaces():
         try:
            arr.append(l.split("\"")[1])
         except:
-            pass
+            if '-' in l:
+                break
     return arr
                 
 
@@ -123,6 +122,7 @@ def doClientWork(maddr,f):
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
+        f.write("master slave configuration: match\n")
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
     if paths==[]:
