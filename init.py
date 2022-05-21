@@ -4,6 +4,7 @@ It can also run as client to create parse trees for validation and synchronizati
 """
 import subprocess
 import os
+import syslog
 import requests
 from hostfinder import HostsFinder
 from ConfigTree import ConfigTree
@@ -48,19 +49,17 @@ def tasks():
                     break
                 else:
                     return
-        f=open(log_fpath,"a")
-        f.write("\nMaster IP: "+getipaddr())
-        f.write("\nSlave  IP: "+getipaddr())
-        f.write('\n\n')
-        secondSubTask(f)
-        thirdSubTask(f)
-        f.write('-'*10+'\n')
-        f.close()
+        syslog.syslog("\nMaster IP: "+getipaddr())
+        syslog.syslog("\nSlave  IP: "+getipaddr())
+        syslog.syslog('\n\n')
+        secondSubTask()
+        thirdSubTask()
+        syslog.syslog('-'*10+'\n')
 
-def secondSubTask(f):
+def secondSubTask():
     pass
 
-def thirdSubTask(f):
+def thirdSubTask():
     root=ConfigTree()
     root.data=None
     netc=ConfigTree.mtfc('network')
@@ -86,14 +85,14 @@ def thirdSubTask(f):
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
     lverd,changelist=ConfigTree.cflc(froot)
     if verd and lverd:
-        f.write("\nfile and runtime configuration: match\n")
+        syslog.syslog("\nfile and runtime configuration: match\n")
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
     paths+=changelist
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    f.write('\nfile and runtime configuration: unmatch\nruntime config anomaly:\n'+s)
+    syslog.syslog('\nfile and runtime configuration: unmatch\nruntime config anomaly:\n'+s)
     sendREvent()
     
         
@@ -117,7 +116,7 @@ def getAllNamespaces():
 def sendREvent(service=None,description=None):
     pass
 
-def doClientWork(maddr,f):
+def doClientWork(maddr):
     try:
       r=requests.get("http://"+maddr+":81/conf")
     except requests.exceptions.ConnectionError:
@@ -126,7 +125,7 @@ def doClientWork(maddr,f):
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
-        f.write("\nmaster slave configuration: match\n")
+        syslog.syslog("\nmaster slave configuration: match\n")
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
     if paths==[]:
@@ -134,13 +133,13 @@ def doClientWork(maddr,f):
         s=''
         for p in paths:
             s+='  '+p+'\n'
-        f.write('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n'+s+'\n')
+        syslog.syslog('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n'+s+'\n')
         sendREvent()
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    f.write('\nslave configuration anomaly:\n')
+    syslog.syslog('\nslave configuration anomaly:\n')
     sendREvent()
 
 addrs=HostsFinder.getAddresses()
@@ -153,13 +152,12 @@ for i in range(len(addrs)):
         else:
             os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
             f=open(log_fpath,"a")
-            f.write("\nMaster IP: "+addrs[i])
-            f.write("\nSlave  IP: "+getipaddr())
-            f.write("\n\n")
-            doClientWork(addrs[i],f)
-            thirdSubTask(f)
-            f.write('-'*10+'\n')
-            f.close()
+            syslog.syslog("\nMaster IP: "+addrs[i])
+            syslog.syslog("\nSlave  IP: "+getipaddr())
+            syslog("\n\n")
+            doClientWork(addrs[i])
+            thirdSubTask()
+            syslog.syslog('-'*10+'\n')
             break
 
          
