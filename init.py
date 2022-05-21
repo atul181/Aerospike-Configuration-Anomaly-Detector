@@ -131,7 +131,7 @@ def doClientWork(maddr,f):
         s=''
         for p in paths:
             s+='  '+p+'\n'
-        f.write('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n')
+        f.write('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n'+s+'\n')
         sendREvent()
         return 
     s=''
