@@ -82,14 +82,14 @@ def thirdSubTask(f):
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
     lverd,changelist=ConfigTree.cflc(froot)
     if verd and lverd:
-        f.write("file and runtime Configuration: match\n")
+        f.write("file and runtime configuration: match\n")
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
     paths+=changelist
     s=''
     for p in paths:
         s+=p+'\n'
-    f.write('\nRuntime config difference\n'+s)
+    f.write('\nfile and runtime configuration: unmatch\nruntime config anomaly:\n'+s)
     sendREvent()
     
         
@@ -130,13 +130,13 @@ def doClientWork(maddr,f):
         s=''
         for p in paths:
             s+=p+'\n'
-        f.write('\nmaster doesnot have these parameters:\n'+s+'-'*10)
+        f.write('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n'+s+'-'*10)
         sendREvent()
         return 
     s=''
     for p in paths:
         s+=p+'\n'
-    f.write('\nPeer configuration difference:\n'+s+'-'*10)
+    f.write('\nslave configuration anomaly:\n'+s+'-'*10)
     sendREvent()
 
 addrs=HostsFinder.getAddresses()
