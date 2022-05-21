@@ -51,6 +51,7 @@ def tasks():
         f=open(log_fpath,"a")
         secondSubTask(f)
         thirdSubTask(f)
+        f.write('-'*10)
         f.close()
 
 def secondSubTask(f):
@@ -130,13 +131,13 @@ def doClientWork(maddr,f):
         s=''
         for p in paths:
             s+='  '+p+'\n'
-        f.write('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n'+s+'-'*10)
+        f.write('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n')
         sendREvent()
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    f.write('\nslave configuration anomaly:\n'+s+'-'*10)
+    f.write('\nslave configuration anomaly:\n')
     sendREvent()
 
 addrs=HostsFinder.getAddresses()
@@ -151,6 +152,7 @@ for i in range(len(addrs)):
             f=open(log_fpath,"a")
             doClientWork(addrs[i],f)
             thirdSubTask(f)
+            f.write('-'*10)
             f.close()
             break
 
