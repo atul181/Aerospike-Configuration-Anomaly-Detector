@@ -130,7 +130,7 @@ def doClientWork(maddr,f):
         s=''
         for p in paths:
             s+=p+'\n'
-        f.write('\nMaster doesnot have these parameters:\n'+s+'-'*10)
+        f.write('\nmaster doesnot have these parameters:\n'+s+'-'*10)
         sendREvent()
         return 
     s=''
