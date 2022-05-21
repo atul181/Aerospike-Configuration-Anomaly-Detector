@@ -88,7 +88,7 @@ def thirdSubTask(f):
     paths+=changelist
     s=''
     for p in paths:
-        s+=p+'\n'
+        s+='  '+p+'\n'
     f.write('\nfile and runtime configuration: unmatch\nruntime config anomaly:\n'+s)
     sendREvent()
     
@@ -129,13 +129,13 @@ def doClientWork(maddr,f):
         paths=ConfigTree.gwpfs(stree,mtree,includeExtra=True)
         s=''
         for p in paths:
-            s+=p+'\n'
+            s+='  '+p+'\n'
         f.write('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n'+s+'-'*10)
         sendREvent()
         return 
     s=''
     for p in paths:
-        s+=p+'\n'
+        s+='  '+p+'\n'
     f.write('\nslave configuration anomaly:\n'+s+'-'*10)
     sendREvent()
 
