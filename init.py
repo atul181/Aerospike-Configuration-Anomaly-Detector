@@ -139,7 +139,8 @@ def doClientWork(maddr):
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    syslog.syslog('\nslave configuration anomaly:\n')
+    syslog.syslog('\nmaster slave configuration: unmatch\n')
+    syslog.syslog('\nslave configuration anomaly:\n'+s)
     sendREvent()
 
 addrs=HostsFinder.getAddresses()
@@ -154,7 +155,7 @@ for i in range(len(addrs)):
             f=open(log_fpath,"a")
             syslog.syslog("\nMaster IP: "+addrs[i])
             syslog.syslog("\nSlave  IP: "+getipaddr())
-            syslog("\n\n")
+            syslog.syslog("\n\n")
             doClientWork(addrs[i])
             thirdSubTask()
             syslog.syslog('-'*10+'\n')
