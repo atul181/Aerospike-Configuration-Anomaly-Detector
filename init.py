@@ -77,6 +77,7 @@ def secondSubTask():
             s+='  '+p+'\n'
         syslog.syslog("\nremote and local configurations: unmatch\nlocal configuration has following extra parameters:\n"+s)
         return 
+    s=''
     for p in paths:
         s+='  '+p+'\n'
     syslog.syslog("\nremote and local configurations: unmatch\nremote config anomaly:\n"+s)
@@ -175,7 +176,6 @@ for i in range(len(addrs)):
             startMaster(addrs,i+1)
         else:
             os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
-            f=open(log_fpath,"a")
             syslog.syslog("\nMaster IP: "+addrs[i])
             syslog.syslog("\nSlave  IP: "+getipaddr())
             syslog.syslog("\n\n")
