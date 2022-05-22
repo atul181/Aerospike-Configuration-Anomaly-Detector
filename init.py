@@ -11,11 +11,15 @@ from ConfigTree import ConfigTree
 import socket
 import threading
 import time
+import base64
+import json
 
 
 app_start_command="python3 flaskserver.py"
 conf_location="/etc/aerospike/aerospike.conf"
-log_fpath="log"
+privatetokenfile="ptoken"
+projectid=36378457
+remote_conf_file_name="aerospike-stg-aerospikepp403.conf"
 duration=3 #seconds
 
 
@@ -57,7 +61,26 @@ def tasks():
         syslog.syslog('-'*10+'\n')
 
 def secondSubTask():
-    pass
+    privatetoken=open(privatetokenfile,"r").read().split('\n')[0]
+    ro=requests.get("https://gitlab.com/api/v4/projects/"+str(projectid)+"/repository/files/"+remote_conf_file_name+"?ref=main",headers={"PRIVATE-TOKEN":privatetoken})
+    jo=json.loads(ro.text)
+    remconf=base64.b64decode(jo['content']).decode("utf-8")
+    verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
+    if verd:
+        syslog.syslog("\nRemote and local configurations: match\n")
+        return
+    paths=ConfigTree.gwpfs(remtree,ftree,includeExtra=True)
+    if paths==[]:
+        paths=ConfigTree.gwpfs(ftree,remtree,includeExtra=True)
+        s=''
+        for p in paths:
+            s+='  '+p+'\n'
+        syslog.syslog("\nremote and local configurations: unmatch\nlocal configuration has following extra parameters:\n"+s)
+        return 
+    for p in paths:
+        s+='  '+p+'\n'
+    syslog.syslog("\nremote and local configurations: unmatch\nremote config anomaly:\n"+s)
+    
 
 def thirdSubTask():
     root=ConfigTree()
@@ -133,7 +156,7 @@ def doClientWork(maddr):
         s=''
         for p in paths:
             s+='  '+p+'\n'
-        syslog.syslog('\nmaster slave configuration: unmatch\nmaster doesnot have these parameters:\n'+s+'\n')
+        syslog.syslog('\nmaster slave configuration: unmatch\nslave configuration has following extra parameters:\n'+s+'\n')
         sendREvent()
         return 
     s=''
