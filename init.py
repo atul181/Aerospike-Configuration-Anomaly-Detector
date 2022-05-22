@@ -80,7 +80,7 @@ def secondSubTask():
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    syslog.syslog("\nremote and local configurations: unmatch\nremote config anomaly:\n"+s)
+    syslog.syslog("\nremote and local configurations: unmatch\nremote config has following different values:\n"+s)
     
 
 def thirdSubTask():
@@ -116,7 +116,7 @@ def thirdSubTask():
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    syslog.syslog('\nfile and runtime configuration: unmatch\nruntime config anomaly:\n'+s)
+    syslog.syslog('\nfile and runtime configuration: unmatch\nruntime config has following different values:\n'+s)
     sendREvent()
     
         
@@ -164,7 +164,7 @@ def doClientWork(maddr):
     for p in paths:
         s+='  '+p+'\n'
     syslog.syslog('\nmaster slave configuration: unmatch\n')
-    syslog.syslog('\nslave configuration anomaly:\n'+s)
+    syslog.syslog('\nmaster config has following different values:\n'+s)
     sendREvent()
 
 addrs=HostsFinder.getAddresses()
