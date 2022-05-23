@@ -17,9 +17,6 @@ import json
 
 app_start_command="python3 flaskserver.py"
 conf_location="/etc/aerospike/aerospike.conf"
-privatetokenfile="ptoken"
-projectid=36378457
-remote_conf_file_name="aerospike-stg-aerospikepp403.conf"
 duration=3 #seconds
 
 
@@ -27,6 +24,10 @@ def getipaddr():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
+
+def getsmasterips():
+    pass
+
 
 def startMaster(addrs,i):
     orig=i-1
@@ -39,7 +40,6 @@ def startMaster(addrs,i):
     #start the thread
     t=threading.Thread(target=tasks)
     t.start()
-    os.system("echo Hi I am "+addrs[orig]+" and I am the Master > logs")
     os.system(app_start_command)
     t.join()
 
@@ -60,11 +60,17 @@ def tasks():
         thirdSubTask()
         syslog.syslog('-'*10+'\n')
 
+
+
 def secondSubTask():
-    privatetoken=open(privatetokenfile,"r").read().split('\n')[0]
-    ro=requests.get("https://gitlab.com/api/v4/projects/"+str(projectid)+"/repository/files/"+remote_conf_file_name+"?ref=main",headers={"PRIVATE-TOKEN":privatetoken})
-    jo=json.loads(ro.text)
-    remconf=base64.b64decode(jo['content']).decode("utf-8")
+    masterips=getsmasterips()
+    for i in range(len(masterips)):
+        try:
+            ro=requests.get(masterips[i]+":81/asrconf")
+            break
+        except requests.exceptions.ConnectionError:
+            continue
+    remconf=ro.text
     verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
     if verd:
         syslog.syslog("\nRemote and local configurations: match\n")
@@ -171,6 +177,12 @@ def doClientWork(maddr):
 
 addrs=HostsFinder.getAddresses()
 addrs.sort()
+smasters=getsmasterips()
+for i in range(len(smasters)):
+    if (os.uname().nodename in smasters[i]) or (getipaddr()==smasters[i]):
+        os.system("python3 smserver.py")
+
+
 for i in range(len(addrs)):
     if os.system("ping -c 1 "+addrs[i])==0:
         #ad is master
