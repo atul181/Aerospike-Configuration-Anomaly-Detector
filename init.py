@@ -76,11 +76,13 @@ def secondSubTask():
         for p in paths:
             s+='  '+p+'\n'
         syslog.syslog("\nremote and local configurations: unmatch\nlocal configuration has following extra parameters:\n"+s)
+        sendREvent()
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
     syslog.syslog("\nremote and local configurations: unmatch\nremote config has following different values:\n"+s)
+    sendREvent()
     
 
 def thirdSubTask():
@@ -137,7 +139,7 @@ def getAllNamespaces():
     return arr
                 
 
-def sendREvent(service=None,description=None):
+def sendREvent(service=None,description="Aerospike configuration anomaly alert"):
     pass
 
 def doClientWork(maddr):
