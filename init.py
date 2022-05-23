@@ -11,8 +11,6 @@ from ConfigTree import ConfigTree
 import socket
 import threading
 import time
-import base64
-import json
 
 
 app_start_command="python3 flaskserver.py"
