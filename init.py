@@ -65,6 +65,7 @@ def tasks():
 
 def secondSubTask():
     remconf=open(gitlab_remote_file_location,"r").read()
+    remconf=rsc(remconf)
     verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
     if verd:
         syslog.syslog("\nRemote and local configurations: match\n")
@@ -202,5 +203,20 @@ for i in range(len(addrs)):
 
          
 
+def rsc(conf):
+    #remove salt code.
+    conf=conf.split('\n')
+    i=0
+    while i<len(conf)
+        if "__CLUSTER__" in conf[i]:
+            conf.pop(i)
+            continue
+        elif ("{{" in conf[i]) and ("}}" in conf[i]):
+            conf[i]=conf[i].split("{{")[0]+' random'
+        elif "{%"  in conf[i] and ('%}' in conf[i]):
+            conf.pop(i)
+            continue 
+        i+=1
+    return '\n'.join(conf)
 
 
