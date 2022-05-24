@@ -145,7 +145,7 @@ def sendREvent(state,service="AScad",description="Aerospike configuration anomal
     server=TCPTransport(host="riemann-prod.phonepe.nb6",port=5555)
     with Client(server) as client:
        ret=client.event(service=service,description=description,state=state,ttl=ttl)
-    syslog.syslog("State of the event that was sent to Riemann: "+state+"\n Reponse from Reimann Server: "+ret)
+    syslog.syslog("\n\nState of the event that was sent to Riemann: "+state+"\n Reponse from Reimann Server: "+str(ret))
     
     
 
