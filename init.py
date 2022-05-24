@@ -11,6 +11,9 @@ from ConfigTree import ConfigTree
 import socket
 import threading
 import time
+from riemann_client.client import Client
+from riemann_client.transport import  TCPTransport
+
 
 
 app_start_command="python3 flaskserver.py"
@@ -25,8 +28,6 @@ def getipaddr():
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
 
-def getsmasterips():
-    pass
 
 
 def startMaster(addrs,i):
@@ -67,6 +68,7 @@ def secondSubTask():
     verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
     if verd:
         syslog.syslog("\nRemote and local configurations: match\n")
+        sendREvent(state='OK')
         return
     paths=ConfigTree.gwpfs(remtree,ftree,includeExtra=True)
     if paths==[]:
@@ -75,13 +77,13 @@ def secondSubTask():
         for p in paths:
             s+='  '+p+'\n'
         syslog.syslog("\nremote and local configurations: unmatch\nlocal configuration has following extra parameters:\n"+s)
-        sendREvent()
+        sendREvent(state="CRITICAL")
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
     syslog.syslog("\nremote and local configurations: unmatch\nremote config has following different values:\n"+s)
-    sendREvent()
+    sendREvent(state="CRITICAL")
     
 
 def thirdSubTask():
@@ -111,6 +113,7 @@ def thirdSubTask():
     lverd,changelist=ConfigTree.cflc(froot)
     if verd and lverd:
         syslog.syslog("\nfile and runtime configuration: match\n")
+        sendREvent(state='OK')
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
     paths+=changelist
@@ -118,7 +121,7 @@ def thirdSubTask():
     for p in paths:
         s+='  '+p+'\n'
     syslog.syslog('\nfile and runtime configuration: unmatch\nruntime config has following different values:\n'+s)
-    sendREvent()
+    sendREvent(state='CRITICAL')
     
         
 
@@ -138,8 +141,14 @@ def getAllNamespaces():
     return arr
                 
 
-def sendREvent(service=None,description="Aerospike configuration anomaly alert"):
-    pass
+def sendREvent(state,service="AScad",description="Aerospike configuration anomaly alert",ttl=60):
+    server=TCPTransport(host="riemann-prod.phonepe.nb6",port=5555)
+    with Client(server) as client:
+       ret=client.event(service=service,description=description,state=state,ttl=ttl)
+    syslog.syslog("State of the event that was sent to Riemann: "+state+"\n Reponse from Reimann Server: "+ret)
+    
+    
+
 
 def doClientWork(maddr):
     try:
@@ -151,6 +160,7 @@ def doClientWork(maddr):
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
         syslog.syslog("\nmaster slave configuration: match\n")
+        sendREvent(state='OK')
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
     if paths==[]:
@@ -159,14 +169,14 @@ def doClientWork(maddr):
         for p in paths:
             s+='  '+p+'\n'
         syslog.syslog('\nmaster slave configuration: unmatch\nslave configuration has following extra parameters:\n'+s+'\n')
-        sendREvent()
+        sendREvent(state="CRITICAL")
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
     syslog.syslog('\nmaster slave configuration: unmatch\n')
     syslog.syslog('\nmaster config has following different values:\n'+s)
-    sendREvent()
+    sendREvent(state="CRITICAL")
 
 addrs=HostsFinder.getAddresses()
 addrs.sort()
