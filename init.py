@@ -15,6 +15,8 @@ import time
 
 app_start_command="python3 flaskserver.py"
 conf_location="/etc/aerospike/aerospike.conf"
+gitlab_remote_file_location="/home/atul/testaerospike/aerospike_template.conf"
+salt_command='salt "*" state.sls filestate'
 duration=3 #seconds
 
 
@@ -61,14 +63,7 @@ def tasks():
 
 
 def secondSubTask():
-    masterips=getsmasterips()
-    for i in range(len(masterips)):
-        try:
-            ro=requests.get(masterips[i]+":81/asrconf")
-            break
-        except requests.exceptions.ConnectionError:
-            continue
-    remconf=ro.text
+    remconf=open(gitlab_remote_file_location,"r").read()
     verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
     if verd:
         syslog.syslog("\nRemote and local configurations: match\n")
@@ -175,11 +170,10 @@ def doClientWork(maddr):
 
 addrs=HostsFinder.getAddresses()
 addrs.sort()
-smasters=getsmasterips()
-for i in range(len(smasters)):
-    if (os.uname().nodename in smasters[i]) or (getipaddr()==smasters[i]):
-        os.system("python3 smserver.py")
-
+hostname=os.uname().nodename
+if "saltmaster" in hostname or "saltsyndic" in hostname:
+    os.system(salt_command)
+    exit()
 
 for i in range(len(addrs)):
     if os.system("ping -c 1 "+addrs[i])==0:
