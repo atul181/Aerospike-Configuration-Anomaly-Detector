@@ -18,8 +18,8 @@ from riemann_client.transport import  TCPTransport
 
 app_start_command="python3 flaskserver.py"
 conf_location="/etc/aerospike/aerospike.conf"
-gitlab_remote_file_location="/home/atul/testaerospike/aerospike_template.conf"
-salt_command='salt "*" state.sls filestate'
+gitlab_remote_file_location="/home/sre/testaerospike/aero_config.stg_nb6-1.TEMPLATE"
+salt_command='salt "*" state.sls ftry'
 duration=3 #seconds
 
 
@@ -27,6 +27,24 @@ def getipaddr():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
+
+
+def rsc(conf):
+    #remove salt code.
+    conf=conf.split('\n')
+    i=0
+    while i<len(conf):
+        if "__CLUSTER__" in conf[i]:
+            conf.pop(i)
+            continue
+        elif ("{{" in conf[i]) and ("}}" in conf[i]):
+            conf[i]=conf[i].split("{{")[0]+' random'
+        elif "{%"  in conf[i] and ('%}' in conf[i]):
+            conf.pop(i)
+            continue 
+        i+=1
+    return '\n'.join(conf)
+
 
 
 
@@ -64,7 +82,10 @@ def tasks():
 
 
 def secondSubTask():
-    remconf=open(gitlab_remote_file_location,"r").read()
+    try:
+         remconf=open(gitlab_remote_file_location,"r").read()
+    except:
+        return 
     remconf=rsc(remconf)
     verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
     if verd:
@@ -182,7 +203,7 @@ def doClientWork(maddr):
 addrs=HostsFinder.getAddresses()
 addrs.sort()
 hostname=os.uname().nodename
-if "saltmaster" in hostname or "saltsyndic" in hostname:
+if "saltmaster" in hostname or "saltsyndic" in hostname or "atul003" in hostname:
     os.system(salt_command)
     exit()
 
@@ -202,21 +223,5 @@ for i in range(len(addrs)):
             break
 
          
-
-def rsc(conf):
-    #remove salt code.
-    conf=conf.split('\n')
-    i=0
-    while i<len(conf)
-        if "__CLUSTER__" in conf[i]:
-            conf.pop(i)
-            continue
-        elif ("{{" in conf[i]) and ("}}" in conf[i]):
-            conf[i]=conf[i].split("{{")[0]+' random'
-        elif "{%"  in conf[i] and ('%}' in conf[i]):
-            conf.pop(i)
-            continue 
-        i+=1
-    return '\n'.join(conf)
 
 
