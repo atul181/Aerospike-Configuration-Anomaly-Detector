@@ -77,6 +77,7 @@ def tasks():
         logging.info("Slave  IP: "+getipaddr()+'\n\n')
         secondSubTask()
         thirdSubTask()
+        logging.info('*'*30+'END OF LOG'+'*'*30)
 
 
 
@@ -180,7 +181,7 @@ def doClientWork(maddr):
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
-        logging.info("master slave configuration: match\n")
+        logging.info(maddr+" and current node configuration: match\n")
         sendREvent(state='OK')
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
@@ -189,14 +190,14 @@ def doClientWork(maddr):
         s=''
         for p in paths:
             s+='  '+p+'\n'
-        logging.critical('master slave configuration: unmatch\nslave configuration has following extra parameters:\n'+s+'\n')
+        logging.critical(maddr+' and current node configuration: unmatch\ncurrent node configuration has following extra parameters:\n'+s+'\n')
         sendREvent(state="CRITICAL")
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    logging.critical('master slave configuration: unmatch\n')
-    logging.critical('master config has following different values:\n'+s)
+    logging.critical(maddr+' and current node configuration: unmatch\n')
+    logging.critical(maddr+' config has following different values:\n'+s)
     sendREvent(state="CRITICAL")
 
 addrs=HostsFinder.getAddresses()
@@ -212,12 +213,11 @@ for i in range(len(addrs)):
         if (os.uname().nodename in addrs[i]) or (getipaddr()==addrs[i]):
             startMaster(addrs,i+1)
         else:
-            os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
             logging.info("Master IP: "+addrs[i])
             logging.info("Slave  IP: "+getipaddr()+'\n\n')
             doClientWork(addrs[i])
             thirdSubTask()
-            logging.info('-'*10+'\n')
+            logging.info('*'*30+'END OF LOG'+'*'*30)
             break
 
          
