@@ -4,7 +4,7 @@ It can also run as client to create parse trees for validation and synchronizati
 """
 import subprocess
 import os
-import syslog
+import logging
 import requests
 from hostfinder import HostsFinder
 from ConfigTree import ConfigTree
@@ -21,6 +21,7 @@ conf_location="/etc/aerospike/aerospike.conf"
 gitlab_remote_file_location="/home/sre/testaerospike/aero_config.stg_nb6-1.TEMPLATE"
 salt_command='salt "*" state.sls ftry'
 duration=3 #seconds
+logging.basicConfig(filename="logs",filemode="a",format='%(asctime)s — %(name)s — %(levelname)s : %(message)s',level=0)
 
 
 def getipaddr():
@@ -72,12 +73,10 @@ def tasks():
                     break
                 else:
                     return
-        syslog.syslog("\nMaster IP: "+getipaddr())
-        syslog.syslog("\nSlave  IP: "+getipaddr())
-        syslog.syslog('\n\n')
+        logging.info("Master IP: "+getipaddr())
+        logging.info("Slave  IP: "+getipaddr()+'\n\n')
         secondSubTask()
         thirdSubTask()
-        syslog.syslog('-'*10+'\n')
 
 
 
@@ -89,7 +88,7 @@ def secondSubTask():
     remconf=rsc(remconf)
     verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
     if verd:
-        syslog.syslog("\nRemote and local configurations: match\n")
+        logging.info("Remote and local configurations: match\n")
         sendREvent(state='OK')
         return
     paths=ConfigTree.gwpfs(remtree,ftree,includeExtra=True)
@@ -98,13 +97,13 @@ def secondSubTask():
         s=''
         for p in paths:
             s+='  '+p+'\n'
-        syslog.syslog("\nremote and local configurations: unmatch\nlocal configuration has following extra parameters:\n"+s)
+        logging.critical("remote and local configurations: unmatch\nlocal configuration has following extra parameters:\n"+s)
         sendREvent(state="CRITICAL")
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    syslog.syslog("\nremote and local configurations: unmatch\nremote config has following different values:\n"+s)
+    logging.critical("remote and local configurations: unmatch\nremote config has following different values:\n"+s)
     sendREvent(state="CRITICAL")
     
 
@@ -134,7 +133,7 @@ def thirdSubTask():
     verd,froot,rroot=ConfigTree.isSame(fconf,ConfigTree.stringify(rroot),ignoreExtra=True)
     lverd,changelist=ConfigTree.cflc(froot)
     if verd and lverd:
-        syslog.syslog("\nfile and runtime configuration: match\n")
+        logging.info("file and runtime configuration: match\n")
         sendREvent(state='OK')
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
@@ -142,7 +141,7 @@ def thirdSubTask():
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    syslog.syslog('\nfile and runtime configuration: unmatch\nruntime config has following different values:\n'+s)
+    logging.critical('file and runtime configuration: unmatch\nruntime config has following different values:\n'+s)
     sendREvent(state='CRITICAL')
     
         
@@ -167,7 +166,7 @@ def sendREvent(state,service="AScad",description="Aerospike configuration anomal
     server=TCPTransport(host="riemann-prod.phonepe.nb6",port=5555)
     with Client(server) as client:
        ret=client.event(service=service,description=description,state=state,ttl=ttl)
-    syslog.syslog("\n\nState of the event that was sent to Riemann: "+state+"\nResponse from Reimann Server: "+str(ret))
+    logging.info("State of the event that was sent to Riemann: "+state+"\nResponse from Reimann Server: "+str(ret))
     
     
 
@@ -181,7 +180,7 @@ def doClientWork(maddr):
     sconf=open(conf_location,"r").read()
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
-        syslog.syslog("\nmaster slave configuration: match\n")
+        logging.info("master slave configuration: match\n")
         sendREvent(state='OK')
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
@@ -190,14 +189,14 @@ def doClientWork(maddr):
         s=''
         for p in paths:
             s+='  '+p+'\n'
-        syslog.syslog('\nmaster slave configuration: unmatch\nslave configuration has following extra parameters:\n'+s+'\n')
+        logging.critical('master slave configuration: unmatch\nslave configuration has following extra parameters:\n'+s+'\n')
         sendREvent(state="CRITICAL")
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
-    syslog.syslog('\nmaster slave configuration: unmatch\n')
-    syslog.syslog('\nmaster config has following different values:\n'+s)
+    logging.critical('master slave configuration: unmatch\n')
+    logging.critical('master config has following different values:\n'+s)
     sendREvent(state="CRITICAL")
 
 addrs=HostsFinder.getAddresses()
@@ -214,12 +213,11 @@ for i in range(len(addrs)):
             startMaster(addrs,i+1)
         else:
             os.system("echo Hi I am "+getipaddr()+" and I am a Slave > logs")
-            syslog.syslog("\nMaster IP: "+addrs[i])
-            syslog.syslog("\nSlave  IP: "+getipaddr())
-            syslog.syslog("\n\n")
+            logging.info("Master IP: "+addrs[i])
+            logging.info("Slave  IP: "+getipaddr()+'\n\n')
             doClientWork(addrs[i])
             thirdSubTask()
-            syslog.syslog('-'*10+'\n')
+            logging.info('-'*10+'\n')
             break
 
          
