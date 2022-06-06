@@ -82,7 +82,9 @@ def tasks():
 
 
 def secondSubTask():
-    clname=open(conf_location,"r").read().split("cluster-name")[1].split('\n')[0].split()[0]
+    f=open(conf_location,"r")
+    clname=f.read().split("cluster-name")[1].split('\n')[0].split()[0]
+    f.close()
     for env in environments:
         r=os.system('salt-call state.sls_id "/var/local/aero_config" aerospike.'+env+'.'+clname+'.config')
         if r==0:
