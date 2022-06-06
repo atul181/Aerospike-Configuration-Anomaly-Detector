@@ -18,8 +18,8 @@ from riemann_client.transport import  TCPTransport
 
 app_start_command="python3 flaskserver.py"
 conf_location="/etc/aerospike/aerospike.conf"
-gitlab_remote_file_location="/home/sre/testaerospike/aero_config.stg_nb6-1.TEMPLATE"
-salt_command='salt "*" state.sls ftry'
+gitlab_remote_file_location="/var/local/aero_config"
+environments=['nb6','nm5','nb1']
 duration=3 #seconds
 logging.basicConfig(filename="logs",filemode="a",format='%(asctime)s — %(name)s — %(levelname)s : %(message)s',level=0)
 
@@ -82,6 +82,12 @@ def tasks():
 
 
 def secondSubTask():
+    clname=open(conf_location,"r").read().split("cluster-name")[1].split('\n')[0].split()[0]
+    for env in environments:
+        r=os.system('salt-call state.sls_id "/var/local/aero_config" aerospike.'+env+'.'+clname+'.config')
+        if r==0:
+            break
+    
     try:
          remconf=open(gitlab_remote_file_location,"r").read()
     except:
@@ -200,12 +206,11 @@ def doClientWork(maddr):
     logging.critical(maddr+' config has following different values:\n'+s)
     sendREvent(state="CRITICAL")
 
+
 addrs=HostsFinder.getAddresses()
 addrs.sort()
 hostname=os.uname().nodename
-if "saltmaster" in hostname or "saltsyndic" in hostname or "atul003" in hostname:
-    os.system(salt_command)
-    exit()
+
 
 for i in range(len(addrs)):
     if os.system("ping -c 1 "+addrs[i])==0:

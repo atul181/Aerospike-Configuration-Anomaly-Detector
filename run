@@ -1,0 +1,8 @@
+#!/bin/bash
+
+exec 1>>logs
+exec 2>>errors
+
+sleep 10s
+
+nice -n 18 python3 init.py
