@@ -2,7 +2,7 @@ import pickle
 
 class HostsFinder:
   hosts=[]
-  FILE='aero_config.yml'
+  FILE='/etc/service/ascad/data/aero_config.yml'
   def getAddresses():
      f=open(HostsFinder.FILE,'r')
      text=f.read().split('\n')[1:-1]

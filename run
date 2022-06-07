@@ -3,6 +3,6 @@
 exec 1>>logs
 exec 2>>errors
 
-sleep 10s
+sleep 12h
 
 nice -n 18 python3 init.py

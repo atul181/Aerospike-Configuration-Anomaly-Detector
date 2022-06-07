@@ -16,12 +16,14 @@ from riemann_client.transport import  TCPTransport
 
 
 
-app_start_command="python3 flaskserver.py"
+app_start_command="python3 /etc/service/ascad/files/flaskserver.py"
+port="3022"
 conf_location="/etc/aerospike/aerospike.conf"
 gitlab_remote_file_location="/var/local/aero_config"
+log_file="/etc/service/ascad/logs/log"
 environments=['nb6','nm5','nb1']
 duration=3 #seconds
-logging.basicConfig(filename="logs",filemode="a",format='%(asctime)s — %(name)s — %(levelname)s : %(message)s',level=0)
+logging.basicConfig(filename=log_file,filemode="a",format='%(asctime)s — %(name)s — %(levelname)s : %(message)s',level=0)
 
 
 def getipaddr():
@@ -53,7 +55,7 @@ def startMaster(addrs,i):
     orig=i-1
     while i<len(addrs):
         try:
-           requests.get("http://"+addrs[i]+":81/shutdown")
+           requests.get("http://"+addrs[i]+":"+port+"/shutdown")
         except:
             pass
         i+=1
@@ -182,7 +184,7 @@ def sendREvent(state,service="AScad",description="Aerospike configuration anomal
 
 def doClientWork(maddr):
     try:
-      r=requests.get("http://"+maddr+":81/conf")
+      r=requests.get("http://"+maddr+":"+port+"/conf")
     except requests.exceptions.ConnectionError:
         return
     mconf=r.text
