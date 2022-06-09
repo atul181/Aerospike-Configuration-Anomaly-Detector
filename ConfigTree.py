@@ -485,36 +485,44 @@ class ConfigTree:
     def cnfp(path1,path2):
         '''
         compare number from path
+        Is ony used in case of comparing file and runtime paths.
+        path1 is file path and path2 is runtime path.
         '''
-        if len(path1[-1].split())!=2 or len(path2[-1].split())!=2:
+        if path1[:-1]!=path2[:-1]:
             return False
-        key,val1=path1[-1].split()
-        tp1=path1[:-1]+[key]
-        key,val2=path2[-1].split()
-        tp2=path2[:-1]+[key]
-        if tp1==tp2:
-            num=''
-            for i in range(len(val1)):
-                if val1[i].isnumeric():
-                    num+=val1[i]
-                else:
-                    break
-            unit=val1[i:]
-            if num=='':
-                return False
-            if unit=='G' or unit=="GiB":
-                mult=1073741824
-            elif unit=='T' or unit=="TiB":
-                mult=1099511627776
-            elif unit=='M' or unit=="MiB":
-                mult=1048576
-            elif unit=="K" or unit=="KiB":
-                mult=1024
+        pp1,pp2=path1[-1],path2[-1] #part of path1 and part of path2
+        pp1=pp1.split()
+        pp2=pp2.split()
+        if len(pp1)!=len(pp2):
+            return False
+        for i in range(len(pp1)):
+            if pp1[i]==pp2[i]:
+                continue
             else:
+                val2=pp2[i]
+                num,unit='',''
+                for j in range(len(pp1[i])):
+                    if pp1[i][j] in '1234567890':
+                        num+=pp1[i][j]
+                    else:
+                        unit=pp1[i][j:]
+                        break
+                if num=='':
+                    return False
+                if unit=='G' or unit=="GiB":
+                   mult=1073741824
+                elif unit=='T' or unit=="TiB":
+                   mult=1099511627776
+                elif unit=='M' or unit=="MiB":
+                   mult=1048576
+                elif unit=="K" or unit=="KiB":
+                   mult=1024
+                else:
+                   return False
+                if int(num)*mult==int(val2):
+                   continue
                 return False
-            if int(num)*mult==int(val2):
-                return True
-            return False
+        return True
                 
 
 

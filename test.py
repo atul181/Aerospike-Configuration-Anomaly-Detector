@@ -21,6 +21,7 @@ A {
 '''
 
 
-verd,froot,rroot=ConfigTree.isSame(fconf,rconf)
-print(verd)
-print(ConfigTree.gwpfs(rroot,froot,includeExtra=True))
+path1=['None','Atul  Biggs Chrles 50G 70 50G    BB 50']
+path2=['None','Atul Biggs Chrles 53687091200 70 53687091200 BB 50']
+
+print(ConfigTree.cnfp(path1,path2))
