@@ -114,6 +114,18 @@ class ConfigTree:
     
 
     def isSame(text1,text2,ignoreExtra=False):
+        '''
+        returns three values :
+           1. boolean value to indicate whether both config strings are same or not.(call it verd)
+           2. ConfigTree root for text1.(call it mroot)
+           3. ConfigTree root for text2.(call it sroot)
+        if ignoreExtra is True then:
+            it will return true as value of verd even if there are some parameters in text2 that are not present in text1;given that the values of text1 parameters are all same in text2.
+            it will return false in all other cases.
+        else:
+            will return true as value of verd only if both the texts exactly match in terms of the values of their parameters and the parameters itself.Meaning that if A is in text2 then A should also be in text1 otherwise it will return false as value of verd.
+        
+        '''
         root1=ConfigTree()
         root2=ConfigTree()
         ConfigTree.process(text1,0,root1)
