@@ -90,6 +90,7 @@ def secondSubTask():
     for env in environments:
         r=os.system('salt-call state.sls_id "/var/local/aero_config" aerospike.'+env+'.'+clname+'.config')
         if r==0:
+            logging.info("Grabbed remote config from salt master using salt-call.Using remote config of "+env+" environment")
             break
     
     try:
