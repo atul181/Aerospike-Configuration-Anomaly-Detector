@@ -101,7 +101,7 @@ def secondSubTask():
     verd,remtree,ftree=ConfigTree.isSame(remconf,open(conf_location,"r").read())
     if verd:
         logging.info("Remote and local configurations: match\n")
-        sendREvent(state='OK')
+        sendREvent(state='ok',service="ascad-ghc") #gitlab and host config
         return
     paths=ConfigTree.gwpfs(remtree,ftree,includeExtra=True)
     if paths==[]:
@@ -110,13 +110,13 @@ def secondSubTask():
         for p in paths:
             s+='  '+p+'\n'
         logging.critical("remote and local configurations: unmatch\nlocal configuration has following extra parameters:\n"+s)
-        sendREvent(state="CRITICAL")
+        sendREvent(state="critical",service="ascad-ghc")
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
     logging.critical("remote and local configurations: unmatch\nremote config has following different values:\n"+s)
-    sendREvent(state="CRITICAL")
+    sendREvent(state="critical",service="ascad-ghc")
     
 
 def thirdSubTask():
@@ -146,7 +146,7 @@ def thirdSubTask():
     lverd,changelist=ConfigTree.cflc(froot)
     if verd and lverd:
         logging.info("file and runtime configuration: match\n")
-        sendREvent(state='OK')
+        sendREvent(state='ok',service="ascad-frc")
         return 
     paths=ConfigTree.gwpfs(rroot,froot)
     paths+=changelist
@@ -154,7 +154,7 @@ def thirdSubTask():
     for p in paths:
         s+='  '+p+'\n'
     logging.critical('file and runtime configuration: unmatch\nruntime config has following different values:\n'+s)
-    sendREvent(state='CRITICAL')
+    sendREvent(state='critical',service="ascad-frc") #file runtime config
     
         
 
@@ -174,11 +174,12 @@ def getAllNamespaces():
     return arr
                 
 
-def sendREvent(state,service="AScad",description="Aerospike configuration anomaly alert",ttl=60):
+def sendREvent(state,service="AScad",description="Aerospike configuration anomaly alert",ttl=1000000):
     server=TCPTransport(host="riemann-prod.phonepe.nb6",port=5555)
+    state=state.lower()
     with Client(server) as client:
        ret=client.event(service=service,description=description,state=state,ttl=ttl)
-    logging.info("State of the event that was sent to Riemann: "+state+"\nResponse from Reimann Server: "+str(ret))
+    logging.info("State of the event that was sent to Riemann: "+state+"\nResponse from Riemann Server: "+str(ret))
     
     
 
@@ -193,7 +194,7 @@ def doClientWork(maddr):
     isequal,mtree,stree=ConfigTree.isSame(mconf,sconf)
     if isequal:
         logging.info(maddr+" and current node configuration: match\n")
-        sendREvent(state='OK')
+        sendREvent(state='ok',service="ascad-msc") #ascad master slave config
         return
     paths=ConfigTree.gwpfs(mtree,stree,includeExtra=True)
     if paths==[]:
@@ -202,14 +203,14 @@ def doClientWork(maddr):
         for p in paths:
             s+='  '+p+'\n'
         logging.critical(maddr+' and current node configuration: unmatch\ncurrent node configuration has following extra parameters:\n'+s+'\n')
-        sendREvent(state="CRITICAL")
+        sendREvent(state="critical",service="ascad-msc")
         return 
     s=''
     for p in paths:
         s+='  '+p+'\n'
     logging.critical(maddr+' and current node configuration: unmatch\n')
     logging.critical(maddr+' config has following different values:\n'+s)
-    sendREvent(state="CRITICAL")
+    sendREvent(state="critical",service="ascad-msc")
 
 
 addrs=HostsFinder.getAddresses()
