@@ -14,5 +14,3 @@ def index():
 def shutdown():
     os._exit(0)
     return 'Ok'
-
-app.run(host='0.0.0.0', port=port)
