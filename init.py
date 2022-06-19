@@ -16,7 +16,7 @@ from riemann_client.transport import  TCPTransport
 
 
 
-app_start_command="python3 /etc/service/ascad/files/flaskserver.py"
+app_start_command="python3 /etc/service/ascad/files/waitress_server.py"
 port="3022"
 conf_location="/etc/aerospike/aerospike.conf"
 gitlab_remote_file_location="/var/local/aero_config"
