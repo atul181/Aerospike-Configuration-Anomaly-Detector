@@ -3,7 +3,6 @@ import os
 
 app = Flask(__name__)
 
-port=3022
 conf_location='/etc/aerospike/aerospike.conf'
 
 @app.route('/conf')
