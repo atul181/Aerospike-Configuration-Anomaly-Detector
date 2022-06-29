@@ -21,6 +21,7 @@ port="3022"
 conf_location="/etc/aerospike/aerospike.conf"
 gitlab_remote_file_location="/var/local/aero_config"
 log_file="/etc/service/ascad/logs/log"
+SearchEnvs=False  #Whether to search environments in salt master for a cluster name.
 environments=['nb6','nm5','nb1']
 duration=3 #seconds
 logging.basicConfig(filename=log_file,filemode="a",format='%(asctime)s — %(name)s — %(levelname)s : %(message)s',level=0)
@@ -83,16 +84,25 @@ def tasks():
 
 
 
-def secondSubTask():
+def secondSubTask(searchEnvs=SearchEnvs):
+    nodes=HostsFinder.getAddresses()
     f=open(conf_location,"r")
     clname=f.read().split("cluster-name")[1].split('\n')[0].split()[0]
     f.close()
-    for env in environments:
+    if searchEnvs:
+        for env in environments:
+            r=os.system('salt-call state.sls_id "/var/local/aero_config" aerospike.'+env+'.'+clname+'.config')
+            if r==0:
+                logging.info("Grabbed remote config from salt master using salt-call.Using remote config of "+env+" environment")
+                break
+    else:
+        env=nodes[0].split('.')[-1]
         r=os.system('salt-call state.sls_id "/var/local/aero_config" aerospike.'+env+'.'+clname+'.config')
         if r==0:
             logging.info("Grabbed remote config from salt master using salt-call.Using remote config of "+env+" environment")
-            break
-    
+        else:
+            logging.info("Remote config not found on salt-master for "+env+" environment.")
+            return     
     try:
          remconf=open(gitlab_remote_file_location,"r").read()
     except:

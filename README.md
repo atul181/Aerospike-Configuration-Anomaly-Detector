@@ -59,4 +59,11 @@ Slave has following tasks:
 3. Send an Ok/Critical event to riemann depending on if there were any differences in the configs that it tried to compare.
 
 
+To run the script:
+$ python3 init.py
+
+Before running the script , there are certain variables whose values have to be set to an appropriate value.These variables are in the beginning of the above 5 python files.
+
+It is advisable to run the init.py python file at a priority value that is lesser than the priority of Aerospike instance so that Aerospike doesnot suffer due to lack of resources because of the script.
+
 
